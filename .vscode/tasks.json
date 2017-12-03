@@ -1,0 +1,33 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "taskName": "Run",
+            "suppressTaskName": true,
+            "isBuildCommand": true,
+            "type": "shell",
+            "command": "processing-java",
+            "args": [
+                "--force",
+                "--sketch=${workspaceRoot}",
+                "--output=${workspaceRoot}/out",
+                "--run"
+            ],
+            "problemMatcher": []
+        }, 
+        {
+            "taskName": "Kill processing-java",
+            "suppressTaskName": true,
+            "isBuildCommand": true,
+            "type": "shell",
+            "command": "pkill",
+            "args": [
+                "-f",
+                "processing-java"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
