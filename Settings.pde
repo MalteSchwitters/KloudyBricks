@@ -20,8 +20,7 @@ class Settings implements KeyboardInteractable {
 
     // key mapping
     
-    public int keymapJump = KeyEvent.VK_UP;
-    public int keymapDodge = KeyEvent.VK_DOWN;
+    public int keymapJump = KeyEvent.VK_SPACE;
 
     public int keymapGeometryOnly = KeyEvent.VK_1;
     public int keymapCollisionOnly = KeyEvent.VK_2;
