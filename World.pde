@@ -6,21 +6,29 @@
  */
 public class World extends RenderableObject {
 
+    public static final int chunkCount = 8;
+    
     private List<PVector> _colors = new ArrayList<PVector>();
     private int _currentColorIndex = 0;
     private float _colorChangeAlpha = 0;
     private float _colorChangeRate = 0.005;
     private Actor _actor = new Actor();
+    private Quad _ground = new Quad();
     private PMatrix3D worldTransformation; 
 
     public World () {
         camera.setTarget(this);
-        addChild(new LineRunnerChunk(0));
-        addChild(new LineRunnerChunk(1));
-        addChild(new LineRunnerChunk(2));
-        addChild(new LineRunnerChunk(3));
+        for (int i = 0; i < chunkCount; i++) {
+            addChild(new LineRunnerChunk(i));
+        }
         addChild(_actor);
+
         _actor.setTranslation(new PVector(0, 75, -90.00));
+
+        _ground.setSize(new PVector(20, 1000, 100));
+        _ground.setTranslation(new PVector(0, 0, -150));
+        _ground.getCollision().setKeyword(Collision.COLLISION_FLOOR);
+        addChild(_ground);
 
         _colors.add(new PVector(25, 188, 157)); // tuerkis
         _colors.add(new PVector(39, 174, 97)); // gruen
@@ -59,7 +67,7 @@ public class World extends RenderableObject {
             // for easier debugging
             g.background(50);
         } else {
-            g.background(c.x - 60, c.y - 60, c.z - 60);
+            g.background(c.x - 80, c.y - 80, c.z - 80);
         }
 
         // poor performance

@@ -6,6 +6,8 @@
 class UserInterface implements Renderable {
 
     private int _score = 0;
+    private int _lastScore = 0;
+    private int _highScore = 0;
 
     public UserInterface() {
 
@@ -13,20 +15,26 @@ class UserInterface implements Renderable {
 
     @Override
     public void render(PGraphics g) {
-        // draw score
         if (gameStarted) {
-            textSize(64);
             String score = String.valueOf(_score);
+            textSize(64);
             text(score, width / 2 - textWidth(score) / 2, 100);
+        } else {
+            if (_lastScore > 0) {
+                String score = "SCORE: " + _lastScore + "     HIGH SCORE: " + _highScore;
+                textSize(32);
+                text(score, width / 2 - textWidth(score) / 2, 100);
+            }
+            String hint = "Press any key to start game";
+            textSize(64);
+            text(hint, width / 2 - textWidth(hint) / 2, height / 2 - 50);
+            String hint2 = "Avoid obstacles, press space to jump";
+            textSize(32);
+            text(hint2, width / 2 - textWidth(hint2) / 2, height / 2 + 50);
+        }
+        if (settings.drawFps) {
             textSize(24);
             text((int) frameRate + " fps", 10, 32);
-        } else {
-            textSize(64);
-            String hint = "Press any key to start game";
-            text(hint, width / 2 - textWidth(hint) / 2, height / 2 - 50);
-            textSize(32);
-            String hint2 = "Avoid obstacles, press space to jump";
-            text(hint2, width / 2 - textWidth(hint2) / 2, height / 2 + 50);
         }
     }
 
@@ -35,6 +43,8 @@ class UserInterface implements Renderable {
     }
 
     public void onDead() {
+        _lastScore = _score;
+        _highScore = Math.max(_highScore, _score);
         _score = 0;
     }
 }

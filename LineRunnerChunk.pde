@@ -10,13 +10,24 @@ public class LineRunnerChunk extends RenderableObject {
     private Quad _obstacle2 = new Quad();
     private Quad _obstacle3 = new Quad();
     private Quad _obstacle4 = new Quad();
+    
+    private BackgroundHouse _background1 = new BackgroundHouse();
+    private BackgroundHouse _background2 = new BackgroundHouse();
+    private BackgroundHouse _background3 = new BackgroundHouse();
+    private BackgroundHouse _background4 = new BackgroundHouse();
+
 
     public LineRunnerChunk(int index) {
         super("Chunk " + index);
         _offset = index * _chunkWidth;
+        float backgroundOffset = _chunkWidth / 4;
+        _background1.setTranslation(new PVector(-150, backgroundOffset * -2, -100));
+        _background2.setTranslation(new PVector(-250, backgroundOffset * -1, -100));
+        _background3.setTranslation(new PVector(-150, backgroundOffset * 0, -100));
+        _background4.setTranslation(new PVector(-200, backgroundOffset * 1, -100));
 
-        _ground.setSize(new PVector(20, _chunkWidth, 5));
-        _ground.setTranslation(new PVector(0, 0, -2.5));
+        _ground.setSize(new PVector(20, _chunkWidth, 100));
+        _ground.setTranslation(new PVector(0, 0, -50));
         _ground.getCollision().setKeyword(Collision.COLLISION_FLOOR);
 
         _obstacle1.setTranslation(new PVector(0, 0, 10));
@@ -35,23 +46,29 @@ public class LineRunnerChunk extends RenderableObject {
         _obstacle4.setSize(new PVector(20, 20, 20));
         _obstacle4.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
 
-        addChild(_ground);
         addChild(_obstacle1);
         addChild(_obstacle2);
         addChild(_obstacle3);
         addChild(_obstacle4);
+        addChild(_background1);
+        addChild(_background2);
+        addChild(_background3);
+        addChild(_background4);
         clearObstacles();
+        randomizeBackground();
     }
 
     @Override
     public void render(PGraphics g) {
-        float y = (getPlayTime() * _speed + _offset) % (_chunkWidth * 4) - _chunkWidth * 2;
-        if (gameStarted) {
-            if (y < getTranslation().y) {
-                    randomizeObstacles();
-                    ui.incrementScore();
+        float y = (getPlayTime() * _speed + _offset) % (_chunkWidth * World.chunkCount) - _chunkWidth * World.chunkCount / 2;
+        if (y < getTranslation().y) {
+            if (gameStarted) {
+                randomizeObstacles();
+                ui.incrementScore();
             }
-        } else {
+            randomizeBackground();
+        }
+        if (!gameStarted) {
             clearObstacles();
         }
         setTranslation(new PVector(0, y, -100));
@@ -88,6 +105,13 @@ public class LineRunnerChunk extends RenderableObject {
             _obstacle3.setEnabled(false);
             _obstacle4.setEnabled(true);
         }
+    }
+
+    private void randomizeBackground() {
+        _background1.randomize();
+        _background2.randomize();
+        _background3.randomize();
+        _background4.randomize();
     }
 
     private long getPlayTime() {

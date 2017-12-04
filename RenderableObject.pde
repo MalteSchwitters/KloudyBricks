@@ -78,7 +78,6 @@ public class RenderableObject implements Renderable {
         for (PVector vert : getVertics()) {
             g.vertex(vert.x, vert.y, vert.z);
         }
-        g.fill(255);
         g.endShape();
     }
 
