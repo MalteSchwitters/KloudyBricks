@@ -7,6 +7,8 @@ public class Actor extends InteractableObject {
     private boolean _jumping = false;
     private boolean _jumpQued = false;
 
+    private PVector _startTranslation;
+    private boolean _dead = false;
     private Quad _body = new Quad();
 
     public Actor() {     
@@ -21,12 +23,12 @@ public class Actor extends InteractableObject {
 
     @Override
     public void render(PGraphics g) {
-        if (_jumping) {
-            long dt = System.currentTimeMillis() - _jumpStartTime;
-            PVector t = getTranslation().copy();
-            t.z = calcJumpHeight(dt);
-            setTranslation(t);
-            setRotation(new PVector((dt/1200.0) * 180, 0, 0));
+        if (_startTranslation != null && getTranslation().y != _startTranslation.y) {
+            addTranslationY(-2);
+        } else if (_dead) {
+            animateDeath();
+        } else if (_jumping) {
+            animateJump();
         } else {
             setRotation(new PVector(0, 0, 0));
         }
@@ -34,15 +36,17 @@ public class Actor extends InteractableObject {
     }
 
     private void jump() {
-        if (!_jumping) {
-            _jumping = true;
-            _jumpStartTime = System.currentTimeMillis();
-            _jumpQued = false;
-            if (_jumpOffset == 0) {
-                _jumpOffset = getTranslation().z;
+        if (getTranslation().y == _startTranslation.y) {
+            if (!_jumping) {
+                _jumping = true;
+                _jumpStartTime = System.currentTimeMillis();
+                _jumpQued = false;
+                if (_jumpOffset == 0) {
+                    _jumpOffset = getTranslation().z;
+                }
+            } else {
+                _jumpQued = true;
             }
-        } else {
-            _jumpQued = true;
         }
     }
 
@@ -50,8 +54,7 @@ public class Actor extends InteractableObject {
     public void onComponentBeginOverlap(RenderableObject component, RenderableObject other, String keyword) {
         super.onComponentBeginOverlap(component, other, keyword);
         if (keyword.equals(Collision.COLLISION_OBSTACLE)) {
-            gameStarted = false;
-            ui.onDead();
+            endGame();
         }
     }
 
@@ -63,7 +66,7 @@ public class Actor extends InteractableObject {
     @Override
     public boolean keyPressed(int keycode, boolean ctrl, boolean alt, boolean shift) {
         if (!gameStarted) {
-            gameStarted = true;
+            startNewGame();
             return true;
         }
         if (keycode == settings.keymapJump) {
@@ -72,18 +75,51 @@ public class Actor extends InteractableObject {
         return false;
     }
 
-    private float calcJumpHeight(long t) {
-        float x = t/65.0;
-        float result =  -sq(x - 9) + 81 + _jumpOffset;
-        if (result > _jumpOffset) {
-            return result;
-        } 
-        if (_jumpQued) {
-            _jumpStartTime = System.currentTimeMillis();
-            _jumpQued = false;
+    private void startNewGame() {
+        _dead = false;
+        gameStarted = true;
+        if (_startTranslation == null) {
+            _startTranslation = getTranslation().copy();
         } else {
-            _jumping = false;
+            PVector t = _startTranslation.copy();
+            t.y += 300;
+            setTranslation(t);
+            setRotation(new PVector(0, 0, 0));
         }
-        return _jumpOffset;
+    }
+
+    private void endGame() {
+        gameStarted = false;
+        _dead = true;   
+        _jumpStartTime = System.currentTimeMillis();
+        _jumpOffset = getTranslation().z;
+        ui.onDead();
+    }
+
+    private void animateJump() {
+        float dt = (System.currentTimeMillis() - _jumpStartTime);
+        PVector t = getTranslation().copy();
+        t.z = Math.max(-sq(dt/64 - 9) + 81 + _startTranslation.z, _startTranslation.z);
+        setTranslation(t);
+        if (t.z == _startTranslation.z) {
+            if (_jumpQued) {
+                _jumpStartTime = System.currentTimeMillis();
+                _jumpQued = false;
+                setTranslation(_startTranslation.copy());
+            } else {
+                _jumping = false;
+                setTranslation(_startTranslation.copy());
+            }
+        }
+        setRotation(new PVector((dt/1200.0) * 180, 0, 0));
+    }
+
+    private void animateDeath() {
+        long dt = (System.currentTimeMillis() - _jumpStartTime);
+        PVector t = getTranslation().copy();
+        t.z = -sq(dt/64 - 9) + 81 + _jumpOffset;
+        t.x -= 1;
+        setTranslation(t);
+        addRotationY(-1);
     }
 }

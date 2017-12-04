@@ -7,7 +7,7 @@
 public class World extends RenderableObject {
 
     public static final int chunkCount = 8;
-    
+
     private List<PVector> _colors = new ArrayList<PVector>();
     private int _currentColorIndex = 0;
     private float _colorChangeAlpha = 0;
@@ -23,7 +23,7 @@ public class World extends RenderableObject {
         }
         addChild(_actor);
 
-        _actor.setTranslation(new PVector(0, 75, -90.00));
+        _actor.setTranslation(new PVector(0, 100, -90.00));
 
         _ground.setSize(new PVector(20, 1000, 100));
         _ground.setTranslation(new PVector(0, 0, -150));
@@ -34,7 +34,7 @@ public class World extends RenderableObject {
         _colors.add(new PVector(39, 174, 97)); // gruen
         _colors.add(new PVector(41, 127, 184)); // blau
         _colors.add(new PVector(154, 89, 181)); // lila
-        _colors.add(new PVector(241, 197, 14)); // gelb
+        //_colors.add(new PVector(241, 197, 14)); // gelb
         _colors.add(new PVector(231, 126, 34)); // orange
         _colors.add(new PVector(232, 76, 61)); // rot
     }

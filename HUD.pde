@@ -3,14 +3,14 @@
  * 
  * User interface, holds all UI components
  */
-class UserInterface implements Renderable {
+class HUD implements Renderable {
 
     private int _score = 0;
     private int _lastScore = 0;
     private int _highScore = 0;
 
-    public UserInterface() {
-
+    public HUD() {
+        _highScore = loadHighScore();
     }
 
     @Override
@@ -44,7 +44,10 @@ class UserInterface implements Renderable {
 
     public void onDead() {
         _lastScore = _score;
-        _highScore = Math.max(_highScore, _score);
+        if (_score > _highScore) {
+            _highScore = _score;
+            saveHighScore(_highScore);
+        }
         _score = 0;
     }
 }

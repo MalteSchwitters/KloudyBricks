@@ -75,3 +75,28 @@ public String toRoundedString(float in) {
 public void printVector(String label, PVector vector) {
     println(label + ": (" + vector.x + ", " + vector.y + ", " + vector.z + ")");
 }
+
+public void saveHighScore(int highscore) {
+    try {
+        PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter("highScore.txt")));
+        writer.write(String.valueOf(highscore));
+        writer.close();
+    } catch (Exception e) {
+        println("Cannot write highscore");
+    }
+}
+
+public int loadHighScore() {
+    try {
+        BufferedReader br = new BufferedReader(new FileReader("highScore.txt"));
+        String text = br.readLine();
+        br.close();
+        if (text != null) {
+            return Integer.valueOf(text);
+        }
+    }
+    catch (Exception e) {
+        println("Cannot read highscore");
+    }
+    return 0;
+}

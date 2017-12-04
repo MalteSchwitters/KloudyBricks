@@ -8,13 +8,15 @@ import java.util.LinkedList;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.lang.StringBuilder;
+import java.io.*;
 
 public MouseInputHandler mouseHandler = new MouseInputHandler();
 public KeyboardInputHandler keyboardHandler = new KeyboardInputHandler();
 public Settings settings = new Settings();
 public Camera camera = new Camera();
-public UserInterface ui = new UserInterface();
+public HUD ui = new HUD();
 public World world = new World();
+
 public long startTime = System.currentTimeMillis();
 public boolean gameStarted = false;
 
