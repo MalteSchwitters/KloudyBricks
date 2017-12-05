@@ -6,7 +6,7 @@
  */
 public class Camera implements Renderable, MouseInteractable {
 
-    private RenderableObject _target;;
+    private RenderableObject _target;
     private PVector _up = new PVector(0, 0, -1);
     private float _horizontalRotation = radians(0);
     private float _verticalRotation = radians(0);
@@ -30,7 +30,7 @@ public class Camera implements Renderable, MouseInteractable {
         float y = g.modelY(0, 0, 0);
         float z = g.modelZ(0, 0, 0);
         g.popMatrix();
-        
+
         // doing this before popMatrix produces some really strange results
         PVector aim = (_target == null)? new PVector(0, 0, 0) : _target.getWorldTranslation();
         g.camera(x, y, z, aim.x, aim.y, aim.z, _up.x, _up.y, _up.z);

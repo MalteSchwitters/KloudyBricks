@@ -23,17 +23,25 @@ public class Animation {
     }
 
     public void restart() {
-        _running = true;
-        _startTimeMillis = System.currentTimeMillis();
+        if (_target != null) {
+            _running = true;
+            _startTimeMillis = System.currentTimeMillis();
+        }
     }
 
     public void cancel() {
-        _running = false;
-        onAnimationFinished(_target);
+        if (isRunning()) {
+            _running = false;
+            onAnimationFinished(_target);
+        }
+    }
+
+    public boolean isRunning() {
+        return _running;
     }
 
     public void tick() {
-        if (_running) {
+        if (isRunning()) {
             float t = (System.currentTimeMillis() - _startTimeMillis) / _duration;
             if (t <= 1) {
                 animate(_target, t);

@@ -5,6 +5,7 @@ public class Actor extends InteractableObject {
     private PVector _startTranslation;
     private boolean _jumpQued = false;
     private Quad _body = new Quad();
+    private RenderableObject _cameraTarget = new RenderableObject();
 
     private Animation _animJump = new JumpAnimation();
     private Animation _animStart = new StartAnimation();
@@ -13,11 +14,18 @@ public class Actor extends InteractableObject {
     public Actor() {     
         super("Actor");         
         buildGeometry();
+        camera.setTarget(_cameraTarget);
     }
 
     private void buildGeometry() {
         _body.setSize(new PVector(20, 30, 30));
         addChild(_body);
+    }
+
+    @Override
+    public void render(PGraphics g) {
+        _cameraTarget.render(g);
+        super.render(g);
     }
 
     @Override
@@ -46,29 +54,38 @@ public class Actor extends InteractableObject {
     }
 
     private void startNewGame() {
-        gameStarted = true;
-        if (_startTranslation == null) {
-            _startTranslation = getTranslation().copy();
-        } else {
-            _animStart.play(this, 2);
+        if (!_animDeath.isRunning()) {
+            gameStarted = true;
+            if (_startTranslation == null) {
+                _startTranslation = getTranslation().copy();
+            } else {
+                _animStart.play(this, 2);
+            }
         }
     }
 
     private void endGame() {
         gameStarted = false;
-        _animDeath.play(this, 5);
-        ui.onDead();
+        _animDeath.play(this, 2);
+        ui.hideAll();
     }
 
     private void jump() {
-        _animJump.play(this, 1.2);
+        if (!_animStart.isRunning() && !_animDeath.isRunning()) {
+            if (_animJump.isRunning()) {
+                _jumpQued = true;
+            } else {
+                _animJump.play(this, 1.2);
+            }
+        }
     }
 
-    public class JumpAnimation extends Animation {
-
+    private class JumpAnimation extends Animation {
         @Override
         public PVector animateTranslation(PVector translation, float t) {
-            translation.z = -sq(t*18 - 9) + 81 + _startTranslation.z;
+            float z = -sq(t*18 - 9) + 81;
+            translation.z = z + _startTranslation.z;
+            _cameraTarget.setTranslation(new PVector(0, 0, z / 8));            
             return translation;
         }
 
@@ -89,7 +106,7 @@ public class Actor extends InteractableObject {
         }
     }
 
-    public class StartAnimation extends Animation {
+    private class StartAnimation extends Animation {
         @Override
         public void onAnimationStarted(RenderableObject target) {
             _animDeath.cancel();
@@ -104,9 +121,15 @@ public class Actor extends InteractableObject {
             translation.y = _startTranslation.y + 300 * (1 - t);
             return translation;
         }
+
+        @Override
+        public void onAnimationFinished(RenderableObject target) {
+            target.setTranslation(_startTranslation.copy());
+            target.setRotation(new PVector(0, 0, 0));
+        }
     }
 
-    public class DeathAnimation extends Animation {
+    private class DeathAnimation extends Animation {
         
         private float _jumpOffset = 0;
         
@@ -119,15 +142,21 @@ public class Actor extends InteractableObject {
 
         @Override
         public PVector animateTranslation(PVector translation, float t) {
-            translation.z = -sq(t*100 - 9) + 81 + _jumpOffset;
+            translation.z = -sq(t*40 - 9) + 81 + _jumpOffset;
             translation.x -= 1;
             return translation;
         }
 
         @Override
         public PVector animateRotation(PVector rotation, float t) {
-            rotation.y = 180 * t;
+            rotation.y = -720 * t;
+            rotation.x = -360 * t;
             return rotation;
+        }
+
+        @Override
+        public void onAnimationFinished(RenderableObject target) {
+            ui.showHighScore();
         }
     }
 }
