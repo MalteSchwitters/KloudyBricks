@@ -5,7 +5,6 @@ public class LineRunnerChunk extends RenderableObject {
 
     private float _offset;
 
-    private Quad _ground = new Quad("Floor " + getNextObjectId());
     private Quad _obstacle1 = new Quad();
     private Quad _obstacle2 = new Quad();
     private Quad _obstacle3 = new Quad();
@@ -21,39 +20,43 @@ public class LineRunnerChunk extends RenderableObject {
         super("Chunk " + index);
         _offset = index * _chunkWidth;
         float backgroundOffset = _chunkWidth / 4;
+        
         _background1.setTranslation(new PVector(-150, backgroundOffset * -2, -100));
+        _background1.setHasCollision(false);
+        addChild(_obstacle1);
+        
         _background2.setTranslation(new PVector(-250, backgroundOffset * -1, -100));
+        _background2.setHasCollision(false);
+        addChild(_obstacle2);
+        
         _background3.setTranslation(new PVector(-150, backgroundOffset * 0, -100));
-        _background4.setTranslation(new PVector(-200, backgroundOffset * 1, -100));
+        _background3.setHasCollision(false);
+        addChild(_obstacle3);
 
-        _ground.setSize(new PVector(20, _chunkWidth, 100));
-        _ground.setTranslation(new PVector(0, 0, -50));
-        _ground.getCollision().setKeyword(Collision.COLLISION_FLOOR);
+        _background4.setTranslation(new PVector(-200, backgroundOffset * 1, -100));
+        _background4.setHasCollision(false);
+        addChild(_obstacle4);
 
         _obstacle1.setTranslation(new PVector(0, 0, 10));
         _obstacle1.setSize(new PVector(20, 20, 20));
         _obstacle1.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
+        addChild(_background1);
 
         _obstacle2.setTranslation(new PVector(0, 30, 10));
         _obstacle2.setSize(new PVector(20, 20, 20));
         _obstacle2.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
+        addChild(_background2);
 
         _obstacle3.setTranslation(new PVector(0, 60, 10));
         _obstacle3.setSize(new PVector(20, 20, 20));
         _obstacle3.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
+        addChild(_background3);
 
         _obstacle4.setTranslation(new PVector(0, 90, 80));
         _obstacle4.setSize(new PVector(20, 20, 20));
         _obstacle4.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
-
-        addChild(_obstacle1);
-        addChild(_obstacle2);
-        addChild(_obstacle3);
-        addChild(_obstacle4);
-        addChild(_background1);
-        addChild(_background2);
-        addChild(_background3);
         addChild(_background4);
+
         clearObstacles();
         randomizeBackground();
     }

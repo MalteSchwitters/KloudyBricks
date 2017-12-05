@@ -29,6 +29,7 @@ public class RenderableObject implements Renderable {
     private boolean _visible = true;
     // disabled object are invisible and don't have collision
     private boolean _enabled = true;
+    private boolean _hasCollision = true;
     private PVector _color = new PVector(255, 255, 255);
     
 
@@ -127,9 +128,11 @@ public class RenderableObject implements Renderable {
     }
 
     private void onBoundingBoxChanged() {
-        getCollision().recalculateExtendedBoundingBox();
-        if (getParent() != null) {
-            getParent().onBoundingBoxChanged();
+        if (hasCollision()) {
+            getCollision().recalculateExtendedBoundingBox();
+            if (getParent() != null) {
+                getParent().onBoundingBoxChanged();
+            }
         }
     }
 
@@ -186,7 +189,7 @@ public class RenderableObject implements Renderable {
     }
 
     public Collision getCollision() {
-        if (_collision == null) {
+        if (_collision == null && hasCollision()) {
             _collision = new Collision(this);
         }
         return _collision;
@@ -197,7 +200,7 @@ public class RenderableObject implements Renderable {
     }
 
     public boolean checkCollision(RenderableObject other) {
-        if (!isEnabled() || !other.isEnabled()) {
+        if (!isEnabled() || !other.isEnabled() || !hasCollision() || !other.hasCollision()) {
             return false;
         }
         return getCollision().checkCollision(other.getCollision());
@@ -321,6 +324,14 @@ public class RenderableObject implements Renderable {
     public void setEnabled(boolean enabled) {
         _enabled = enabled;
         getCollision().calculateBoundingBox(getVertics());
+    }
+
+    public boolean hasCollision() {
+        return _hasCollision;
+    }
+
+    public void setHasCollision(boolean collision) {
+        _hasCollision = collision;
     }
 
     public PVector getColor() {

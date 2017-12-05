@@ -51,7 +51,9 @@ public class Collision implements Renderable {
         }
 
         for (RenderableObject child : _collisionFor.getChildren()) {
-            child.getCollision().render(g);
+            if (child.hasCollision()) {
+                child.getCollision().render(g);
+            }
         }
     }
 
