@@ -2,14 +2,13 @@
 
 public class Actor extends InteractableObject {
     
-    private float _jumpOffset = 0;
-    private long _jumpStartTime = 0;
-    private boolean _jumping = false;
-    private boolean _jumpQued = false;
-
     private PVector _startTranslation;
-    private boolean _dead = false;
+    private boolean _jumpQued = false;
     private Quad _body = new Quad();
+
+    private Animation _animJump = new JumpAnimation();
+    private Animation _animStart = new StartAnimation();
+    private Animation _animDeath = new DeathAnimation();
 
     public Actor() {     
         super("Actor");         
@@ -19,35 +18,6 @@ public class Actor extends InteractableObject {
     private void buildGeometry() {
         _body.setSize(new PVector(20, 30, 30));
         addChild(_body);
-    }
-
-    @Override
-    public void render(PGraphics g) {
-        if (_startTranslation != null && getTranslation().y != _startTranslation.y) {
-            addTranslationY(-2);
-        } else if (_dead) {
-            animateDeath();
-        } else if (_jumping) {
-            animateJump();
-        } else {
-            setRotation(new PVector(0, 0, 0));
-        }
-        super.render(g);
-    }
-
-    private void jump() {
-        if (getTranslation().y == _startTranslation.y) {
-            if (!_jumping) {
-                _jumping = true;
-                _jumpStartTime = System.currentTimeMillis();
-                _jumpQued = false;
-                if (_jumpOffset == 0) {
-                    _jumpOffset = getTranslation().z;
-                }
-            } else {
-                _jumpQued = true;
-            }
-        }
     }
 
     @Override
@@ -76,50 +46,88 @@ public class Actor extends InteractableObject {
     }
 
     private void startNewGame() {
-        _dead = false;
         gameStarted = true;
         if (_startTranslation == null) {
             _startTranslation = getTranslation().copy();
         } else {
-            PVector t = _startTranslation.copy();
-            t.y += 300;
-            setTranslation(t);
-            setRotation(new PVector(0, 0, 0));
+            _animStart.play(this, 2);
         }
     }
 
     private void endGame() {
         gameStarted = false;
-        _dead = true;   
-        _jumpStartTime = System.currentTimeMillis();
-        _jumpOffset = getTranslation().z;
+        _animDeath.play(this, 5);
         ui.onDead();
     }
 
-    private void animateJump() {
-        float dt = (System.currentTimeMillis() - _jumpStartTime);
-        PVector t = getTranslation().copy();
-        t.z = Math.max(-sq(dt/64 - 9) + 81 + _startTranslation.z, _startTranslation.z);
-        setTranslation(t);
-        if (t.z == _startTranslation.z) {
-            if (_jumpQued) {
-                _jumpStartTime = System.currentTimeMillis();
-                _jumpQued = false;
-                setTranslation(_startTranslation.copy());
-            } else {
-                _jumping = false;
-                setTranslation(_startTranslation.copy());
-            }
-        }
-        setRotation(new PVector((dt/1200.0) * 180, 0, 0));
+    private void jump() {
+        _animJump.play(this, 1.2);
     }
 
-    private void animateDeath() {
-        long dt = (System.currentTimeMillis() - _jumpStartTime);
-        PVector t = getTranslation().copy();
-        t.z = -sq(dt/64 - 9) + 81 + _jumpOffset;
-        t.x -= 1;
-        setTranslation(t);
-        addRotationY(-1);
+    public class JumpAnimation extends Animation {
+
+        @Override
+        public PVector animateTranslation(PVector translation, float t) {
+            translation.z = -sq(t*18 - 9) + 81 + _startTranslation.z;
+            return translation;
+        }
+
+        @Override
+        public PVector animateRotation(PVector rotation, float t) {
+            rotation.x = 180 * t;
+            return rotation;
+        }
+
+        @Override
+        public void onAnimationFinished(RenderableObject target) {
+            target.setTranslation(_startTranslation.copy());
+            target.setRotation(new PVector(0, 0, 0));
+            if (_jumpQued) {
+                _jumpQued = false;
+                restart();
+            }
+        }
+    }
+
+    public class StartAnimation extends Animation {
+        @Override
+        public void onAnimationStarted(RenderableObject target) {
+            _animDeath.cancel();
+            PVector t = _startTranslation.copy();
+            t.y += 300;
+            target.setTranslation(t);
+            target.setRotation(new PVector(0, 0, 0));
+        }
+        
+        @Override
+        public PVector animateTranslation(PVector translation, float t) {
+            translation.y = _startTranslation.y + 300 * (1 - t);
+            return translation;
+        }
+    }
+
+    public class DeathAnimation extends Animation {
+        
+        private float _jumpOffset = 0;
+        
+        @Override
+        public void onAnimationStarted(RenderableObject target) {
+            _jumpOffset = target.getTranslation().z;
+            _jumpQued = false;
+            _animJump.cancel();
+        }
+
+        @Override
+        public PVector animateTranslation(PVector translation, float t) {
+            translation.z = -sq(t*100 - 9) + 81 + _jumpOffset;
+            translation.x -= 1;
+            return translation;
+        }
+
+        @Override
+        public PVector animateRotation(PVector rotation, float t) {
+            rotation.y = 180 * t;
+            return rotation;
+        }
     }
 }

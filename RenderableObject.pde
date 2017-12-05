@@ -11,7 +11,8 @@ public class RenderableObject implements Renderable {
     protected String _id = ""; 
     private RenderableObject _parent;
     private List<RenderableObject> _children = new ArrayList<RenderableObject>();
-    
+    private List<Animation> _animations = new ArrayList<Animation>();
+
     private PVector _localTranslation = new PVector();
     private PVector _localRotation = new PVector();
     private PVector _worldTranslation = new PVector();
@@ -43,6 +44,10 @@ public class RenderableObject implements Renderable {
     public void render(PGraphics g) {
         if (!_enabled) {
             return;
+        }
+
+        for (Animation anim : _animations) {
+            anim.tick();
         }
 
         g.pushMatrix();
@@ -174,6 +179,12 @@ public class RenderableObject implements Renderable {
         return _children;
     }
 
+    public void addAnimation(Animation a) {
+        if (!_animations.contains(a)) {
+            _animations.add(a);
+        }
+    }
+
     public Collision getCollision() {
         if (_collision == null) {
             _collision = new Collision(this);
@@ -214,7 +225,7 @@ public class RenderableObject implements Renderable {
 
     // get local translation
     public PVector getTranslation() {
-        return _localTranslation;
+        return _localTranslation.copy();
     }
 
     // set local translation
@@ -224,7 +235,7 @@ public class RenderableObject implements Renderable {
     }
 
     public PVector getWorldTranslation() {
-        return _worldTranslation;
+        return _worldTranslation.copy();
     }
 
     public void addTranslationX(float delta) {
@@ -243,7 +254,7 @@ public class RenderableObject implements Renderable {
     }
 
     public PVector getRotation() {
-        return _localRotation;
+        return _localRotation.copy();
     }
 
     // set rotation in degrees
@@ -256,7 +267,7 @@ public class RenderableObject implements Renderable {
     }
 
     public PVector getWorldRotation() {
-        return _worldRotation;
+        return _worldRotation.copy();
     }
 
     // set x rotation in degrees

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.LinkedList;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
-import java.lang.StringBuilder;
 import java.io.*;
 
 public MouseInputHandler mouseHandler = new MouseInputHandler();
