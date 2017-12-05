@@ -22,19 +22,15 @@ public class LineRunnerChunk extends RenderableObject {
         float backgroundOffset = _chunkWidth / 4;
         
         _background1.setTranslation(new PVector(-150, backgroundOffset * -2, -100));
-        _background1.setHasCollision(false);
         addChild(_obstacle1);
         
         _background2.setTranslation(new PVector(-250, backgroundOffset * -1, -100));
-        _background2.setHasCollision(false);
         addChild(_obstacle2);
         
         _background3.setTranslation(new PVector(-150, backgroundOffset * 0, -100));
-        _background3.setHasCollision(false);
         addChild(_obstacle3);
 
         _background4.setTranslation(new PVector(-200, backgroundOffset * 1, -100));
-        _background4.setHasCollision(false);
         addChild(_obstacle4);
 
         _obstacle1.setTranslation(new PVector(0, 0, 10));

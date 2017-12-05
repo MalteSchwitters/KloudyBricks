@@ -4,6 +4,7 @@ public class BackgroundHouse extends RenderableObject {
 
     public BackgroundHouse() {
         addChild(_house);
+        setHasCollision(false);
     }
 
     @Override
