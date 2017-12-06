@@ -23,6 +23,15 @@ public class Animation {
      * ticked in the render function of the target before transformation is applied. 
      */
     public void play(RenderableObject target, float duration) {
+        play(target, duration, 0);
+    }
+
+    /**
+     * Play the animation on the target reference with a given duration. The animation will automatically be 
+     * ticked in the render function of the target before transformation is applied. Starts the animation
+     * with an offset. This does not affect the restart function.
+     */
+    public void play(RenderableObject target, float duration, float start) {
         if (duration <= 0) {
             println("Invalid animation duration. Must be > 0!");
             return;
@@ -34,7 +43,7 @@ public class Animation {
         _target = target;
         _target.addAnimation(this);
         _duration = duration * 1000;
-        _startTimeMillis = System.currentTimeMillis();
+        _startTimeMillis = System.currentTimeMillis() - (long) (start * 1000);
         _running = true;
         onAnimationStarted(_target);
     }

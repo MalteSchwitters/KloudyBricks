@@ -50,6 +50,7 @@ public class RenderableObject implements Renderable {
 
     @Override
     public void render(PGraphics g) {
+        long startTime = System.currentTimeMillis();
         if (!_enabled) {
             // nothing to do here
             return;
@@ -78,6 +79,11 @@ public class RenderableObject implements Renderable {
             renderGeometry(g);
         }
 
+        long renderTime = System.currentTimeMillis() - startTime;
+        if (renderTime > 10) {
+            println("Warn: Rendering " + _id + " took " + renderTime + " millis.");
+        }
+
         // render children
         for (RenderableObject child : getChildren()) {
             child.render(g);
@@ -87,7 +93,7 @@ public class RenderableObject implements Renderable {
         g.popMatrix();
     }
 
-    private void renderGeometry(PGraphics g) {
+    protected void renderGeometry(PGraphics g) {
         if (getVertics().isEmpty()) {
             return;
         }
@@ -225,7 +231,7 @@ public class RenderableObject implements Renderable {
     }
 
     public Collision getCollision() {
-        if (_collision == null && hasCollision()) {
+        if (_collision == null) {
             _collision = new Collision(this);
         }
         return _collision;

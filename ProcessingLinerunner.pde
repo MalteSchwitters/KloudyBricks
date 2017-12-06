@@ -33,7 +33,7 @@ private int _nextObjectId;
 @Override
 public void setup() {
     size(1280, 768, P3D);
-    frameRate(60);
+    frameRate(30);
     colorMode(RGB, 255);
     float cameraZ = (height / 2.0) / tan(fov / 2.0);
     ratio = (float) width / (float) height;
@@ -49,6 +49,8 @@ public void setup() {
 
 @Override
 public void draw() {
+
+    // loop soundtrack
     if (!_soundtrack.isPlaying()) {
         _soundtrack.rewind();
         _soundtrack.play();

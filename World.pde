@@ -13,6 +13,7 @@ public class World extends RenderableObject {
 
     private Actor _actor = new Actor();
     private Quad _ground = new Quad();
+    private Background _background = new Background();
     private RenderableObject _cameraTarget = new RenderableObject();
 
     public World () {
@@ -34,6 +35,8 @@ public class World extends RenderableObject {
         _actor.setTranslation(new PVector(0, 100, -85.00));
         addChild(_actor);
 
+        addChild(_background);
+
         _animColors.play(this, 10);
     }
 
@@ -53,7 +56,7 @@ public class World extends RenderableObject {
             // for easier debugging
             g.background(50);
         } else {
-            g.background(getColor().x - 80, getColor().y - 80, getColor().z - 80);
+            g.background(getColor().x + 80, getColor().y + 80, getColor().z + 80);
         }
 
         // poor performance
@@ -79,7 +82,7 @@ public class World extends RenderableObject {
             _colors.add(new PVector(25, 188, 157)); // tuerkis
             _colors.add(new PVector(39, 174, 97)); // gruen
             _colors.add(new PVector(41, 127, 184)); // blau
-            _colors.add(new PVector(154, 89, 181)); // lila
+            //_colors.add(new PVector(154, 89, 181)); // lila
             _colors.add(new PVector(231, 126, 34)); // orange
             //_colors.add(new PVector(241, 197, 14)); // gelb
             _colors.add(new PVector(232, 76, 61)); // rot

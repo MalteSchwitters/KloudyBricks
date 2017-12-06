@@ -11,6 +11,7 @@ public class Collision implements Renderable {
     public static final String COLLISION_FLOOR = "floor";
     public static final String COLLISION_OBSTACLE = "obstacle";
     public static final String COLLISION_ACTOR = "actor";
+    public static final String COLLISION_TRIGGER = "trigger";
 
     // currently detected cullisions, needed for the end overlap event
     private List<RenderableObject> _collidesWith = new ArrayList<RenderableObject>();
