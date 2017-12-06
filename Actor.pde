@@ -7,9 +7,8 @@ public class Actor extends InteractableObject {
     
     private PVector _startTranslation;
     private boolean _jumpQued = false;
-    
+
     private Quad _body = new Quad();
-    private RenderableObject _cameraTarget = new RenderableObject();
 
     private Animation _animJump = new JumpAnimation();
     private Animation _animStart = new StartAnimation();
@@ -18,7 +17,6 @@ public class Actor extends InteractableObject {
     public Actor() {     
         super("Actor");         
         buildGeometry();
-        camera.setTarget(_cameraTarget);
     }
 
     private void buildGeometry() {
@@ -28,7 +26,6 @@ public class Actor extends InteractableObject {
 
     @Override
     public void render(PGraphics g) {
-        _cameraTarget.render(g);
         super.render(g);
     }
 
@@ -92,7 +89,7 @@ public class Actor extends InteractableObject {
         public PVector animateTranslation(PVector translation, float t) {
             float z = -sq(t*18 - 9) + 81;
             translation.z = z + _startTranslation.z;
-            _cameraTarget.setTranslation(new PVector(0, 0, z / 8));            
+            camera.getTarget().setTranslation(new PVector(0, 0, z / 8));            
             return translation;
         }
 
@@ -117,8 +114,11 @@ public class Actor extends InteractableObject {
      * Animation to play when starting a new game after death.
      */
     private class StartAnimation extends Animation {
+        private PVector _cameraStartTranslation;
+
         @Override
         public void onAnimationStarted(RenderableObject target) {
+            _cameraStartTranslation = camera.getTarget().getTranslation();
             _animDeath.cancel();
             PVector t = _startTranslation.copy();
             t.y += 300;
@@ -129,6 +129,7 @@ public class Actor extends InteractableObject {
         @Override
         public PVector animateTranslation(PVector translation, float t) {
             translation.y = _startTranslation.y + 300 * (1 - t);
+            camera.getTarget().setTranslation(new PVector(0, 0, 0).lerp(_cameraStartTranslation, 1 - t));
             return translation;
         }
 
@@ -146,10 +147,13 @@ public class Actor extends InteractableObject {
         
         // z translation when the animation starts
         private float _jumpOffset = 0;
+        // translation of the camera target when animation starts
+        private PVector _cameraStartTranslation;
         
         @Override
         public void onAnimationStarted(RenderableObject target) {
             _jumpOffset = target.getTranslation().z;
+            _cameraStartTranslation = camera.getTarget().getTranslation();
             _jumpQued = false;
             _animJump.cancel();
         }
@@ -158,6 +162,7 @@ public class Actor extends InteractableObject {
         public PVector animateTranslation(PVector translation, float t) {
             translation.z = -sq(t*40 - 9) + 81 + _jumpOffset;
             translation.x -= 1;
+            camera.getTarget().setTranslation(new PVector(0, 0, 30).lerp(_cameraStartTranslation, 1 - t));           
             return translation;
         }
 

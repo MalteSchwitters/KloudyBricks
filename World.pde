@@ -6,28 +6,33 @@
  */
 public class World extends RenderableObject {
 
-    private PMatrix3D worldTransformation; 
     public static final int chunkCount = 8;
+
+    private PMatrix3D worldTransformation; 
     private Animation _animColors = new ColorChangeAnimation();
+
     private Actor _actor = new Actor();
     private Quad _ground = new Quad();
+    private RenderableObject _cameraTarget = new RenderableObject();
 
     public World () {
+        addChild(_cameraTarget);
+        camera.setTarget(_cameraTarget);
         
         // init level chunks
         for (int i = 0; i < chunkCount; i++) {
             addChild(new LineRunnerChunk(i));
         }
-        
-        // init actor
-        _actor.setTranslation(new PVector(0, 100, -90.00));
-        addChild(_actor);
 
         // init ground
         _ground.setSize(new PVector(20, 1000, 100));
         _ground.setTranslation(new PVector(0, 0, -150));
         _ground.getCollision().setKeyword(Collision.COLLISION_FLOOR);
         addChild(_ground);
+        
+        // init actor
+        _actor.setTranslation(new PVector(0, 100, -90.00));
+        addChild(_actor);
 
         _animColors.play(this, 10);
     }

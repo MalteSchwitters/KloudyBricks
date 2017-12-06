@@ -1,3 +1,8 @@
+/**
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
+ * 
+ * Block to be used as a house in the background .
+ */
 public class BackgroundHouse extends RenderableObject {
 
     private Quad _house = new Quad();
@@ -8,15 +13,7 @@ public class BackgroundHouse extends RenderableObject {
     }
 
     @Override
-    public void render(PGraphics g) {
-        stroke(64, 64, 64);
-        super.render(g);
-        noStroke();
-    }
-
-    @Override
     public void setColorInherit(PVector c) {
-        //super.setColorInherit(new PVector(c.x -55, c.y -55, c.z - 55));
         float delta = -45;
         super.setColorInherit(new PVector(c.x + delta, c.y + delta, c.z + delta));
     }
@@ -28,5 +25,4 @@ public class BackgroundHouse extends RenderableObject {
         _house.setRotation(new PVector(0, 0, random(20) - 20));
         _house.setTranslation(new PVector(-random(200), 0, 0));
     }
-
 }

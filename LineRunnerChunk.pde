@@ -1,3 +1,8 @@
+/**
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
+ * 
+ * Part of the level
+ */
 public class LineRunnerChunk extends RenderableObject {
 
     private final float _chunkWidth = 200;
