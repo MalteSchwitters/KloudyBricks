@@ -1,14 +1,10 @@
 /** 
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
- * RenderableObject that also has mouse and keyboard input registered. Only needs to override needed functions
+ * RenderableObject that also has mouse and keyboard input registered. Only need to override used functions
  * of MouseInteractable and KeyboardInteractable interfaces.
  */
 public class InteractableObject extends RenderableObject implements MouseInteractable, KeyboardInteractable {
-
-    private color cSelected = color(255, 0, 0);
-    private color cDefault = color(255, 255, 255);
-    private boolean _selected = false;
 
     public InteractableObject () {
         this("");
@@ -21,19 +17,7 @@ public class InteractableObject extends RenderableObject implements MouseInterac
     }
 
     @Override
-    public void render(PGraphics g) {
-        if (_selected) {
-            g.fill(cSelected);
-            super.render(g);
-            g.fill(cDefault);
-        } else {
-            super.render(g);
-        }
-    }
-
-    @Override
     public boolean mousePressed(float x, float y) {
-       // _selected = !_selected;
        return false;
     }
 

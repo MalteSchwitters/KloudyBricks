@@ -1,5 +1,5 @@
 /**
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
  * Simple renderable quad. Does not use Processing box(...) function, but verticies.
  */

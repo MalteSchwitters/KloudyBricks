@@ -1,9 +1,13 @@
-// Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
-
+/**
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
+ * 
+ * User controlled actor with jump and die animation
+ */
 public class Actor extends InteractableObject {
     
     private PVector _startTranslation;
     private boolean _jumpQued = false;
+    
     private Quad _body = new Quad();
     private RenderableObject _cameraTarget = new RenderableObject();
 
@@ -80,6 +84,9 @@ public class Actor extends InteractableObject {
         }
     }
 
+    /**
+     * Animation to play when jumping. 
+     */
     private class JumpAnimation extends Animation {
         @Override
         public PVector animateTranslation(PVector translation, float t) {
@@ -106,6 +113,9 @@ public class Actor extends InteractableObject {
         }
     }
 
+    /**
+     * Animation to play when starting a new game after death.
+     */
     private class StartAnimation extends Animation {
         @Override
         public void onAnimationStarted(RenderableObject target) {
@@ -129,8 +139,12 @@ public class Actor extends InteractableObject {
         }
     }
 
+    /**
+     * Animation to play when hitting an object.
+     */
     private class DeathAnimation extends Animation {
         
+        // z translation when the animation starts
         private float _jumpOffset = 0;
         
         @Override

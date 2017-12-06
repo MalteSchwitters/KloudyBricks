@@ -1,3 +1,16 @@
+/**
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
+ * 
+ * Animation class to animate a RenderableObject. This class provides functions to directly change the 
+ * local translation and rotation of the target and a generic animate function, that can be overriten 
+ * in an extending class. The animation will automatically be ticked in the render function of the 
+ * RenderableObject before its transform is applied.
+ * 
+ * Usage:
+ * Animation myAnim = new ImplementedAnimation();
+ * myAnim.play(targetReference, 5);
+ * 
+ */
 public class Animation {
 
     private RenderableObject _target;
@@ -5,6 +18,10 @@ public class Animation {
     private float _duration ;
     private boolean _running = false;
 
+    /**
+     * Play the animation on the target reference with a given duration. The animation will automatically be 
+     * ticked in the render function of the target before transformation is applied. 
+     */
     public void play(RenderableObject target, float duration) {
         if (duration <= 0) {
             println("Invalid animation duration. Must be > 0!");
@@ -22,13 +39,22 @@ public class Animation {
         onAnimationStarted(_target);
     }
 
+    /**
+     * Restarts the animation, if target was already specified once (using the play function). Does
+     * nothing otherwise.
+     */
     public void restart() {
         if (_target != null) {
             _running = true;
             _startTimeMillis = System.currentTimeMillis();
+            onAnimationStarted(_target);
         }
     }
 
+    /**
+     * Stops the currently running animation and executes the onAnimationFinished() function if it was
+     * runnning. Does nothing otherwise.
+     */
     public void cancel() {
         if (isRunning()) {
             _running = false;
@@ -36,17 +62,25 @@ public class Animation {
         }
     }
 
+    /**
+     * Returns if this animation is currently running.
+     */
     public boolean isRunning() {
         return _running;
     }
 
+    /**
+     * Triggers update of the animation. animate, animateTranslation and animateRotation will be executed
+     * in this function. Does nothing if the animation is not running. This function is intended to be 
+     * called by the RenderableObject in the render function. 
+     */
     public void tick() {
         if (isRunning()) {
             float t = (System.currentTimeMillis() - _startTimeMillis) / _duration;
             if (t <= 1) {
                 animate(_target, t);
                 _target.setTranslation(animateTranslation(_target.getTranslation(), t));
-                _target.setRotation(animateRotation(_target.getRotation(), t));
+                _target.setRotation_deg(animateRotation(_target.getRotation_deg(), t));
             } else {
                 _running = false;
                 onAnimationFinished(_target);
@@ -54,22 +88,39 @@ public class Animation {
         }
     }
 
+    /**
+     * Generic animation.
+     */
     public void animate(RenderableObject target, float dt) {
 
     }
 
+    /**
+     * Animate the local translation of the target. translation parameter is a copy of the targets
+     * current local translation. 
+     */
     public PVector animateTranslation(PVector translation, float dt) {
         return translation;
     }
 
+    /**
+     * Animate the local rotation of the target. rotation parameter is a copy of the targets
+     * current local rotation. 
+     */
     public PVector animateRotation(PVector rotation, float dt) {
         return rotation;
     }
 
+    /**
+     * Executed once when the animation is started by the play function.
+     */
     public void onAnimationStarted(RenderableObject target) {
 
     }
 
+    /**
+     * Executed once when the animation has finished or was canceled.
+     */
     public void onAnimationFinished(RenderableObject target) {
         
     }

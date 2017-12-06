@@ -1,5 +1,5 @@
 /**
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
  * Root object of the rendered 3D world. World rotation of all renderable objects is relative to this 
  * object.

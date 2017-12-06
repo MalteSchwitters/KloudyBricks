@@ -1,5 +1,5 @@
 /**
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
  * List of interfaces used in this project. These are all in one file to reduce overall file count.
  */

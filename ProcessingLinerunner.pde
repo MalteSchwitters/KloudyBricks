@@ -1,12 +1,11 @@
 /**
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
- * 
+ * Main class
  */
 import java.util.List;
 import java.util.LinkedList;
 import java.awt.event.KeyEvent;
-import java.text.DecimalFormat;
 import java.io.*;
 
 public MouseInputHandler mouseHandler = new MouseInputHandler();

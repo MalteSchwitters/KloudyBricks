@@ -1,16 +1,21 @@
 /**
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
- * Collsion object, that handles bounding box and collision calculations for a RenderableObejct
+ * Collsion object, that handles bounding box and collision calculations for a RenderableObeject. Only works
+ * for polygone objects, as the objects verticies are needed for bounding box calculation!
  */
 public class Collision implements Renderable {
 
+    // Collision type, used to check with what kind of object overlapped
     public static final String COLLISION_DEFAULT = "default";
     public static final String COLLISION_FLOOR = "floor";
     public static final String COLLISION_OBSTACLE = "obstacle";
     public static final String COLLISION_ACTOR = "actor";
 
+    // currently detected cullisions, needed for the end overlap event
     private List<RenderableObject> _collidesWith = new ArrayList<RenderableObject>();
+    
+    // collision properties
     private RenderableObject _collisionFor;
     private PVector _boundingBoxTranslation = new PVector();
     private PVector _boundingBoxSize = new PVector();
@@ -24,32 +29,23 @@ public class Collision implements Renderable {
 
     @Override
     public void render(PGraphics g) {
+        // collision can be rendered for debugging using the specified keys in the settings
+        PVector boxTranslation = _boundingBoxTranslation;
+        PVector boxSize = _boundingBoxSize;
 
-        // TODO: uncomment to render extended bounding box instead
-        PVector boxTranslation = _extendedBoundingBoxTranslation;
-        PVector boxSize = _extendedBoundingBoxSize; 
-
-        boxTranslation = _boundingBoxTranslation;
-        boxSize = _boundingBoxSize;
-
+        // if the bounding box has no size, then we don't have a collision to render
         if (boxSize.mag() != 0) {
-            g.pushMatrix();        
+            g.pushMatrix();
             g.translate(boxTranslation.x, boxTranslation.y, boxTranslation.z);
-            // move to the center of the collision
+            // move to the center of the collision, as box is rendered with centered translation
             g.translate(boxSize.x / 2, boxSize.y / 2, boxSize.z / 2);
-
-            if (_collisionFor._parent == world) {
-                // render top level bounding box in different color
-                g.stroke(0, 150, 0);
-                g.fill(0, 150, 0, 5);
-            } else {
-                g.stroke(150, 0, 0);
-                g.fill(150, 0, 0, 5);
-            }
+            g.stroke(150, 0, 0);
+            g.fill(150, 0, 0, 5);
             g.box(boxSize.x, boxSize.y, boxSize.z);
             g.popMatrix();
         }
 
+        // render collision of child objects
         for (RenderableObject child : _collisionFor.getChildren()) {
             if (child.hasCollision()) {
                 child.getCollision().render(g);
@@ -57,7 +53,11 @@ public class Collision implements Renderable {
         }
     }
 
+    /**
+     * Calculates the bounding box of the collision. 
+     */
     public void calculateBoundingBox(List<PVector> vertics) {
+        clearCollision();
         if (_collisionFor.isEnabled()) {
             PVector boundingBoxMin = new PVector();
             PVector boundingBoxMax = new PVector();
@@ -70,16 +70,12 @@ public class Collision implements Renderable {
             _boundingBoxSize = PVector.sub(boundingBoxMax, boundingBoxMin);
             _boundingBoxTranslation = PVector.add(boundingBoxMin, _collisionFor.getWorldTranslation());
             recalculateExtendedBoundingBox();
-
-            // check if we are still overlapping with these
-            for (RenderableObject col : _collidesWith) {
-                // this will trigger a current modification exception
-                //checkCollision(col.getCollision());
-            }
-        } else {
-            clearCollision();
         }
     }
+
+    /**
+     * Resets the bounding box and ends all overlaps.
+     */
     public void clearCollision() {
         _boundingBoxTranslation = new PVector(0, 0, 0);
         _boundingBoxSize = new PVector(0, 0, 0);
@@ -95,7 +91,7 @@ public class Collision implements Renderable {
         _keyword = keyword;
     }
 
-    public void beginOverlap(RenderableObject other) {
+    private void beginOverlap(RenderableObject other) {
         if (!_collidesWith.contains(other)) {
             _collidesWith.add(other);
             _collisionFor.onBeginOverlap(other, other.getCollision()._keyword);
@@ -104,7 +100,7 @@ public class Collision implements Renderable {
         }
     }
 
-    public void endOverlap(RenderableObject other) {
+    private void endOverlap(RenderableObject other) {
         if (_collidesWith.contains(other)) {
             _collidesWith.remove(other);
             _collisionFor.onEndOverlap(other, other.getCollision()._keyword);
@@ -112,7 +108,7 @@ public class Collision implements Renderable {
         }
     }
 
-    public void extendBoundingBox(RenderableObject object) {        
+    private void extendBoundingBox(RenderableObject object) {        
         if (object == null || object.getCollision()._extendedBoundingBoxSize.mag() == 0) {
             // child has no collision
             return;
@@ -131,13 +127,12 @@ public class Collision implements Renderable {
         }
     }
 
-    public void recalculateExtendedBoundingBox() {
+    private void recalculateExtendedBoundingBox() {
         _extendedBoundingBoxTranslation = _boundingBoxTranslation;
         _extendedBoundingBoxSize = _boundingBoxSize;
         for (RenderableObject child : _collisionFor.getChildren()) {
             //child.getCollision().recalculateExtendedBoundingBox();
             extendBoundingBox(child);
-
         }
         if (_collisionFor.getParent() != null) {
             _collisionFor.getParent().getCollision().recalculateExtendedBoundingBox();

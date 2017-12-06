@@ -1,9 +1,8 @@
 /**
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
  * Static utility functions for common operations like vector rotation. 
  */
-
 public PVector unrotateVector(PVector translation, PVector rotation) {
     PVector rotatedTranslation = translation;
     rotatedTranslation = rotateVectorX(rotatedTranslation, -rotation.x);
@@ -66,16 +65,9 @@ public PVector maxVector(PVector a, PVector b) {
     return result;
 }
 
-public String toRoundedString(float in) {
-    DecimalFormat df0_0000 = new DecimalFormat("#0.0000");
-    return df0_0000.format(in);
-}
-
-// For debugging
-public void printVector(String label, PVector vector) {
-    println(label + ": (" + vector.x + ", " + vector.y + ", " + vector.z + ")");
-}
-
+/**
+ * Saves the current highscore to highScore.txt. The file only saves the best highscore.
+ */
 public void saveHighScore(int highscore) {
     try {
         PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter("highScore.txt")));
@@ -86,6 +78,9 @@ public void saveHighScore(int highscore) {
     }
 }
 
+/**
+ * Reads the current highscore from highScore.txt.
+ */
 public int loadHighScore() {
     try {
         BufferedReader br = new BufferedReader(new FileReader("highScore.txt"));

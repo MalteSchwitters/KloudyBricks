@@ -1,5 +1,5 @@
 /**
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
  * Keyboard input handler to register components for keyboard input. Last added component has highest 
  * prio in input order. If a component consumes the input, components with lower prio will NOT get 
@@ -7,18 +7,18 @@
  */
 class KeyboardInputHandler {
 
-    // general keyboard input, does not check for keyboard focus
-    List<KeyboardInteractable> _components = new LinkedList<KeyboardInteractable>();
+    // general keyboard input, does not check for keyboard focus on ui components
+    private List<KeyboardInteractable> _components = new LinkedList<KeyboardInteractable>();
     
-    boolean _ctrlDown = false;
-    boolean _altDown = false;
-    boolean _shiftDown = false;
+    private boolean _ctrlDown = false;
+    private boolean _altDown = false;
+    private boolean _shiftDown = false;
 
-    void registerForKeyboardInput(KeyboardInteractable comp) {
+    public void registerForKeyboardInput(KeyboardInteractable comp) {
         _components.add(0, comp);
     }
 
-    void keyPressed(int keycode) {
+    public void keyPressed(int keycode) {
         // check modifier keys
         if (keycode == KeyEvent.VK_CONTROL) {
             _ctrlDown = true;
@@ -35,7 +35,7 @@ class KeyboardInputHandler {
         }
     }
 
-    void keyReleased(int keycode) {
+    public void keyReleased(int keycode) {
         // check modifier keys
         if (keycode == KeyEvent.VK_CONTROL) {
             _ctrlDown = false;

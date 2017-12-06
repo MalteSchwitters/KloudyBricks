@@ -1,8 +1,8 @@
 /**
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
- * Camera that can be rotated with mouse (hold mouse button and drag) and zoomed with keyboard 
- * or mouse scroll. The camera is auto aimed at a target. Check settings class for keyboard binding.
+ * Camera that can be rotated with mouse (hold mouse button and drag) and zoomed with mouse 
+ * scroll. The camera is auto aimed at a target.
  */
 public class Camera implements Renderable, MouseInteractable {
 

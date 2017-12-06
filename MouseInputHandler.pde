@@ -1,5 +1,5 @@
 /**
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
  * Mouse input handler to register components for mouse input. Last added component has highest 
  * prio in input order. If a component consumes the input, components with lower prio will NOT get 

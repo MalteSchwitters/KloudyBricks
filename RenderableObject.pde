@@ -1,38 +1,45 @@
 /**
- * Malte Schwitters 2017, für das WPM Interaktive 3D-Graphik mit Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
  * Renderable object, that has a hirarchy of children, that inherit its parents transform. Also calculates
  * world rotation and translation and handles auto generated collision. Translation is applied before
- * rotation in y -> x -> z order (hpb).
+ * rotation in z -> y -> x order.
  */
 public class RenderableObject implements Renderable {
 
-    // name for this component, used for debugging
+    // id for this component, used for debugging and equals
     protected String _id = ""; 
+
+    // child/parent hirarchy
     private RenderableObject _parent;
     private List<RenderableObject> _children = new ArrayList<RenderableObject>();
+    
+    // list of animations for this object
     private List<Animation> _animations = new ArrayList<Animation>();
 
+    // transform
     private PVector _localTranslation = new PVector();
     private PVector _localRotation = new PVector();
     private PVector _worldTranslation = new PVector();
     private boolean _worldTranslationDirty = true;
     private PVector _worldRotation = new PVector();
-    // set this variable to true to recalculate the world transdorm in the render function
+
+    // helper variable to recalculate the world transdorm in the render function if needed
     private boolean _worldTransformChanged = false;
 
+    // 3d representation
     protected int objectType = TRIANGLES;
     private List<PVector> _vertics;
     private Collision _collision;
+    private PVector _color = new PVector(255, 255, 255);
 
     // invisible objects still have collision
     private boolean _visible = true;
-    // disabled object are invisible and don't have collision
+    // disabled object are invisible and don't have collision, also affects children
     private boolean _enabled = true;
+    // objects without collision are still visible, also affects children
     private boolean _hasCollision = true;
-    private PVector _color = new PVector(255, 255, 255);
     
-
     public RenderableObject() {
         _id = getClass().getSimpleName() + " " + getNextObjectId();
     }
@@ -44,34 +51,39 @@ public class RenderableObject implements Renderable {
     @Override
     public void render(PGraphics g) {
         if (!_enabled) {
+            // nothing to do here
             return;
         }
 
+        // tick animation
         for (Animation anim : _animations) {
             anim.tick();
         }
 
+        // apply transform
         g.pushMatrix();
-        // local translation needs to be rotated first, because the local rotation is applied after 
-        // the local translation in the render function
         g.translate(getTranslation().x, getTranslation().y, getTranslation().z);
         g.rotateZ(getRotation().z);
         g.rotateY(getRotation().y);
         g.rotateX(getRotation().x);
         
-        // only do this calculations, if transform changed flag is set
+        // only do this calculations, if transform changed flag was set
         if (_worldTransformChanged) {
             _worldTransformChanged = false;
             calculateWorldTransform(g);
         }
 
+        // render own geometry
         if (settings.renderGeometry && _visible) {
             renderGeometry(g);
         }
 
+        // render children
         for (RenderableObject child : getChildren()) {
             child.render(g);
         }
+
+        // undo local transform
         g.popMatrix();
     }
 
@@ -87,7 +99,7 @@ public class RenderableObject implements Renderable {
         g.endShape();
     }
 
-    protected void calculateWorldTransform(PGraphics g) {
+    private void calculateWorldTransform(PGraphics g) {
         // get the current transformation matrix and undo the camera transform
         // world translation and rotation are relative to camera!
         PMatrix3D m = (PMatrix3D) g.getMatrix().get();
@@ -136,6 +148,10 @@ public class RenderableObject implements Renderable {
         }
     }
 
+    /**
+     * Returns the verticies for this object. Calls loadGeometry and updates collision 
+     * if vertics is null (lazy init).
+     */
     public List<PVector> getVertics() {
         if (_vertics == null) {
             _vertics = loadGeometry();
@@ -144,21 +160,31 @@ public class RenderableObject implements Renderable {
         return _vertics;
     }
 
-    // override in extending class, to define what should be rendered
+    /*
+     * Override in extending class, to define what should be rendered
+     */
     protected List<PVector> loadGeometry() {
         return new ArrayList<PVector>();
     }
 
+    /*
+     * Reset the geometry and collision. Use if your object vertics need to be recalculated.
+     */
     protected void clearGeometry() {
         _vertics = null;
         getCollision().clearCollision();
     }
 
-    // may be null
+    /*
+     * Returns the parent of this object, or null if it has no parent.
+     */
     public RenderableObject getParent() {
         return _parent;
     }
 
+    /**
+     * Adds a child to this object hirarchy.
+     */
     public void addChild(RenderableObject child) {
         if (child == this || child == null) {
             return;
@@ -172,16 +198,26 @@ public class RenderableObject implements Renderable {
         getCollision().recalculateExtendedBoundingBox();
     }
 
+    /**
+     * Removes a child from this objects hirarchy.
+     */
     public void removeChild(RenderableObject child) {
         getChildren().remove(child);
         child._parent = null;
         child._worldTransformChanged = true;
     }
 
+    /**
+     * Returns current children. Do not add or remove children from this list! Use addChild and 
+     * removeChild functions! 
+     */
     public List<RenderableObject> getChildren() {
         return _children;
     }
 
+    /**
+     * Adds an animation to be ticked in this objects render function.
+     */
     public void addAnimation(Animation a) {
         if (!_animations.contains(a)) {
             _animations.add(a);
@@ -199,6 +235,9 @@ public class RenderableObject implements Renderable {
         _collision = collision;
     }
 
+    /**
+     * Check if this object collides with the other object.
+     */
     public boolean checkCollision(RenderableObject other) {
         if (!isEnabled() || !other.isEnabled() || !hasCollision() || !other.hasCollision()) {
             return false;
@@ -206,107 +245,86 @@ public class RenderableObject implements Renderable {
         return getCollision().checkCollision(other.getCollision());
     }
 
+    /**
+     * Called when this object collides with another object.
+     */
     public void onBeginOverlap(RenderableObject other, String keyword) {
         onComponentBeginOverlap(this, other, keyword);
     }
 
+    /**
+     * Called when this object stops colliding with another object.
+     */
     public void onEndOverlap(RenderableObject other, String keyword) {
         onComponentEndOverlap(this, other, keyword);
     }
 
+    /**
+     * Called when this object or one of its children collides with another object.
+     */
     public void onComponentBeginOverlap(RenderableObject component, RenderableObject other, String keyword) {
         if (getParent() != null) {
             getParent().onComponentBeginOverlap(component, other, keyword);
         }
     }
 
+    /**
+     * Called when this object or one of its children stops colliding with another object.
+     */
     public void onComponentEndOverlap(RenderableObject component, RenderableObject other, String keyword) {
         if (getParent() != null) {
             getParent().onComponentEndOverlap(component, other, keyword);
         }
     }
 
-    // get local translation
     public PVector getTranslation() {
         return _localTranslation.copy();
-    }
-
-    // set local translation
-    public void setTranslation(PVector translation) {
-        _localTranslation = translation;
-        _worldTransformChanged = true;
     }
 
     public PVector getWorldTranslation() {
         return _worldTranslation.copy();
     }
 
-    public void addTranslationX(float delta) {
-        _localTranslation.x += delta;
+    public void setTranslation(float x, float y, float z) {
+        setTranslation(new PVector(x, y, z));
+    }
+
+    public void setTranslation(PVector translation) {
+        _localTranslation = translation;
         _worldTransformChanged = true;
     }
 
-    public void addTranslationY(float delta) {
-        _localTranslation.y += delta;
-        _worldTransformChanged = true;
-    }
-
-    public void addTranslationZ(float delta) {
-        _localTranslation.z += delta;
-        _worldTransformChanged = true;
+    public PVector getRotation_deg() {
+        PVector rotation = new PVector();
+        rotation.x = degrees(_localRotation.x);
+        rotation.y = degrees(_localRotation.y);
+        rotation.z = degrees(_localRotation.z);
+        return rotation;
     }
 
     public PVector getRotation() {
         return _localRotation.copy();
     }
 
-    // set rotation in degrees
-    public void setRotation(PVector rotation) {
-        // transform to radians
+    public void setRotation_deg(float x, float y, float z) {
+        setRotation_deg(new PVector(x, y, z));
+    }
+
+    public void setRotation_deg(PVector rotation) {
+        // first transform to radians
         _localRotation.x = radians(rotation.x);
         _localRotation.y = radians(rotation.y);
         _localRotation.z = radians(rotation.z);
         _worldTransformChanged = true;
     }
 
+    public void setRotation(PVector rotation) {
+        _localRotation = rotation;
+        _worldTransformChanged = true;
+    }
+
     public PVector getWorldRotation() {
         return _worldRotation.copy();
-    }
-
-    // set x rotation in degrees
-    public void setRotationX(float deg) {
-        _localRotation.x = radians(deg);
-        _worldTransformChanged = true;
-    }
-
-    // add x rotation in degrees
-    public void addRotationX(float deltaDegree) {
-        _localRotation.x += radians(deltaDegree);
-        _worldTransformChanged = true;
-    }
-
-    // set y rotation in degrees
-    public void setRotationY(float deg) {
-        _localRotation.y = radians(deg);
-        _worldTransformChanged = true;
-    }
-
-    // add y rotation in degrees
-    public void addRotationY(float deltaDegree) {
-        _localRotation.y += radians(deltaDegree);
-        _worldTransformChanged = true;
-    }
-
-    // set z rotation in degrees
-    public void setRotationZ(float deg) {
-        _localRotation.z = radians(deg);
-        _worldTransformChanged = true;
-    }
-
-    // add z rotation in degrees
-    public void addRotationZ(float deltaDegree) {
-        _localRotation.z += radians(deltaDegree);
-        _worldTransformChanged = true;
     }
 
     public boolean isVisible() {
@@ -342,6 +360,9 @@ public class RenderableObject implements Renderable {
         _color = col;
     }
 
+    /**
+     * Sets the color for this object and all its child objects recursively.
+     */
     public void setColorInherit(PVector col) {
         _color = col;
         for (RenderableObject child : getChildren()) {

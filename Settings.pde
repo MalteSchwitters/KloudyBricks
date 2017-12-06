@@ -9,10 +9,6 @@ class Settings implements KeyboardInteractable {
     // render settings
     public boolean renderCollision = false;
     public boolean renderGeometry = true;
-    public int gridSize = 100;
-    public boolean renderAxis = true;
-    public boolean renderGrid = true;
-
     public boolean drawFps = false;
 
     // input settings
