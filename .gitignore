@@ -1,1 +1,5 @@
 out/
+application.linux-arm64/
+application.linux-armv6hf/
+application.linux32/
+application.linux64/

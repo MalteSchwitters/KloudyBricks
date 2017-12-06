@@ -54,6 +54,11 @@ public class Actor extends InteractableObject {
         return false;
     }
 
+    @Override
+    public void setColorInherit(PVector col) {
+        super.setColorInherit(col.copy().mult(1.2));
+    }
+
     private void startNewGame() {
         if (!_animDeath.isRunning()) {
             gameStarted = true;

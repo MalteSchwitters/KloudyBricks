@@ -3,6 +3,8 @@
  * 
  * Main class
  */
+
+import ddf.minim.*;
 import java.util.List;
 import java.util.LinkedList;
 import java.awt.event.KeyEvent;
@@ -14,6 +16,7 @@ public Settings settings = new Settings();
 public Camera camera = new Camera();
 public HUD ui = new HUD();
 public World world = new World();
+private AudioPlayer _soundtrack;
 
 public long startTime = System.currentTimeMillis();
 public boolean gameStarted = false;
@@ -39,11 +42,18 @@ public void setup() {
 
     worldGraphics = createGraphics(width, height, P3D);
     uiGraphics = createGraphics(width, height, P2D);
+    
+    _soundtrack = new Minim(this).loadFile("soundtrack.mp3");
+    _soundtrack.play();
 }
 
 @Override
 public void draw() {
-    
+    if (!_soundtrack.isPlaying()) {
+        _soundtrack.rewind();
+        _soundtrack.play();
+    }
+
     worldGraphics.beginDraw();
     worldGraphics.perspective(fov, ratio, cameraNear, cameraFar);
     camera.render(worldGraphics);
