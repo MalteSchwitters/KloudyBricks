@@ -16,6 +16,8 @@ public Settings settings = new Settings();
 public Camera camera = new Camera();
 public HUD ui = new HUD();
 public World world = new World();
+
+private AudioPlayer deathSound;
 private AudioPlayer _soundtrack;
 
 public long startTime = System.currentTimeMillis();
@@ -42,7 +44,7 @@ public void setup() {
 
     worldGraphics = createGraphics(width, height, P3D);
     uiGraphics = createGraphics(width, height, P2D);
-    
+    deathSound = new Minim(this).loadFile("death.mp3");
     _soundtrack = new Minim(this).loadFile("soundtrack.mp3");
     _soundtrack.play();
 }

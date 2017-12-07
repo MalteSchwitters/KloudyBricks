@@ -6,9 +6,8 @@
  */
 public class World extends RenderableObject {
 
-    public static final int chunkCount = 8;
-
     private PMatrix3D worldTransformation; 
+
     private Animation _animColors = new ColorChangeAnimation();
 
     private Actor _actor = new Actor();
@@ -20,9 +19,9 @@ public class World extends RenderableObject {
         addChild(_cameraTarget);
         camera.setTarget(_cameraTarget);
         
-        // init level chunks
-        for (int i = 0; i < chunkCount; i++) {
-            addChild(new LineRunnerChunk(i));
+        // create obstacles
+        for (int i = 0; i < 4; i++) {
+            addChild(new Obstacle(1 - i / 4f));
         }
 
         // init ground
@@ -49,7 +48,7 @@ public class World extends RenderableObject {
         // lighting
         g.noStroke();
         g.lights();
-        g.directionalLight(150, 150, 150, -1, -1, -1);
+        g.directionalLight(150, 150, 150, 1, 1, -1);
 
         // change background over time
         if (settings.renderCollision) {
@@ -79,13 +78,13 @@ public class World extends RenderableObject {
         
         public ColorChangeAnimation() {
             // init colors
-            _colors.add(new PVector(25, 188, 157)); // tuerkis
-            _colors.add(new PVector(39, 174, 97)); // gruen
+            //_colors.add(new PVector(25, 188, 157)); // tuerkis
+            _colors.add(new PVector(231, 126, 34)); // orange
+            _colors.add(new PVector(232, 76, 61)); // rot
             _colors.add(new PVector(41, 127, 184)); // blau
             //_colors.add(new PVector(154, 89, 181)); // lila
-            _colors.add(new PVector(231, 126, 34)); // orange
             //_colors.add(new PVector(241, 197, 14)); // gelb
-            _colors.add(new PVector(232, 76, 61)); // rot
+            _colors.add(new PVector(39, 174, 97)); // gruen
         }
 
         @Override

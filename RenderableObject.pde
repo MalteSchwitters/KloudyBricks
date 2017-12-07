@@ -45,7 +45,7 @@ public class RenderableObject implements Renderable {
     }
 
     public RenderableObject(String id) {
-        _id = id;
+        _id = id + " " + getNextObjectId();
     }
 
     @Override
@@ -178,7 +178,7 @@ public class RenderableObject implements Renderable {
      */
     protected void clearGeometry() {
         _vertics = null;
-        getCollision().clearCollision();
+        getCollision().calculateBoundingBox(null);
     }
 
     /*

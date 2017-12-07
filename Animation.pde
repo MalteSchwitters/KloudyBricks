@@ -37,7 +37,7 @@ public class Animation {
             return;
         }
         if (_running) {
-            println("Animation is alread running.");
+            println("Animation " + getClass().getSimpleName() + " is alread running.");
             return;
         }
         _target = target;
@@ -46,6 +46,10 @@ public class Animation {
         _startTimeMillis = System.currentTimeMillis() - (long) (start * 1000);
         _running = true;
         onAnimationStarted(_target);
+    }
+
+    public void setTime(float time) {
+        _startTimeMillis = System.currentTimeMillis() - (long) (time * 1000);
     }
 
     /**

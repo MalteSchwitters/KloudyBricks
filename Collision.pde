@@ -31,8 +31,8 @@ public class Collision implements Renderable {
     @Override
     public void render(PGraphics g) {
         // collision can be rendered for debugging using the specified keys in the settings
-        PVector boxTranslation = _boundingBoxTranslation;
-        PVector boxSize = _boundingBoxSize;
+        PVector boxTranslation = _extendedBoundingBoxTranslation;// _boundingBoxTranslation;
+        PVector boxSize = _extendedBoundingBoxSize;// _boundingBoxSize;
 
         // if the bounding box has no size, then we don't have a collision to render
         if (boxSize.mag() != 0) {
@@ -58,8 +58,9 @@ public class Collision implements Renderable {
      * Calculates the bounding box of the collision. 
      */
     public void calculateBoundingBox(List<PVector> vertics) {
-        clearCollision();
-        if (_collisionFor.isEnabled()) {
+        _boundingBoxTranslation = new PVector(0, 0, 0);
+        _boundingBoxSize = new PVector(0, 0, 0);
+        if (_collisionFor.isEnabled() && vertics != null) {
             PVector boundingBoxMin = new PVector();
             PVector boundingBoxMax = new PVector();
 
@@ -72,20 +73,21 @@ public class Collision implements Renderable {
             _boundingBoxTranslation = PVector.add(boundingBoxMin, _collisionFor.getWorldTranslation());
             recalculateExtendedBoundingBox();
         }
+        checkCurrentCollisions();
     }
 
-    /**
-     * Resets the bounding box and ends all overlaps.
-     */
-    public void clearCollision() {
-        _boundingBoxTranslation = new PVector(0, 0, 0);
-        _boundingBoxSize = new PVector(0, 0, 0);
-        for (RenderableObject col : _collidesWith) {
-            _collisionFor.onEndOverlap(col, col.getCollision()._keyword);
-            col.onEndOverlap(_collisionFor, _keyword);
+    public void checkCurrentCollisions() {
+        List<RenderableObject> temp = new ArrayList<RenderableObject>();
+        for (RenderableObject obj : _collidesWith) {
+            PVector aTranslation = _boundingBoxTranslation;
+            PVector aSize = _boundingBoxSize;
+            PVector bTranslation = obj.getCollision()._boundingBoxTranslation;
+            PVector bSize = obj.getCollision()._boundingBoxSize;
+            if (!checkCollision(aTranslation, aSize, bTranslation, bSize)) {
+                temp.add(obj);
+            }
         }
-        _collidesWith.clear();
-        recalculateExtendedBoundingBox();
+        _collidesWith.removeAll(temp);
     }
 
     public void setKeyword(String keyword) {
@@ -95,8 +97,8 @@ public class Collision implements Renderable {
     private void beginOverlap(RenderableObject other) {
         if (!_collidesWith.contains(other)) {
             _collidesWith.add(other);
+            other.getCollision()._collidesWith.add(_collisionFor);
             _collisionFor.onBeginOverlap(other, other.getCollision()._keyword);
-            other.onBeginOverlap(_collisionFor, _keyword);
             other.onBeginOverlap(_collisionFor, _keyword);
         }
     }
@@ -104,6 +106,7 @@ public class Collision implements Renderable {
     private void endOverlap(RenderableObject other) {
         if (_collidesWith.contains(other)) {
             _collidesWith.remove(other);
+            other.getCollision()._collidesWith.remove(_collisionFor);
             _collisionFor.onEndOverlap(other, other.getCollision()._keyword);
             other.onEndOverlap(_collisionFor, _keyword);
         }

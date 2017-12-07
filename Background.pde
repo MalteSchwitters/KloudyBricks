@@ -6,11 +6,14 @@ public class Background extends RenderableObject {
 
     private RenderableObject _level1 = new RenderableObject("Background 1");
     private RenderableObject _level2 = new RenderableObject("Background 2");
+    private RenderableObject _level3 = new RenderableObject("Background 3");
     
     public Background() {
         super("background");
+        setHasCollision(false);
         addChild(generateHouses(_level1, new PVector(-150, 0, -350), 10));
-        addChild(generateHouses(_level2, new PVector(-250, 0, -250), 15));
+        addChild(generateHouses(_level2, new PVector(-250, 0, -275), 15));
+        addChild(generateHouses(_level3, new PVector(-350, 0, -200), 25));
     }
 
     private RenderableObject generateHouses(RenderableObject level, PVector translation, int houseCount) {
@@ -25,7 +28,7 @@ public class Background extends RenderableObject {
             
             float bounds = 300 + houseCount * 20;
             Animation animation = new BackgroundAnimation(-bounds, bounds);
-            float start = animTime * (i / (float) (houseCount)) - animTime / houseCount;
+            float start = animTime * ((i - 1) / (float) (houseCount)) - animTime / houseCount;
             // println("start: " + start);
             animation.play(house, animTime, start); 
         }
@@ -36,8 +39,10 @@ public class Background extends RenderableObject {
     public void setColorInherit(PVector c) {
         PVector c1 = c.copy().add(new PVector(40, 40, 40));
         _level1.setColorInherit(c1);
-        PVector c2 = c.copy().add(new PVector(80, 80, 80));
+        PVector c2 = c.copy().add(new PVector(60, 60, 60));
         _level2.setColorInherit(c2);
+        PVector c3 = c.copy().add(new PVector(80, 80, 80));
+        _level3.setColorInherit(c3);
     }
 
     private class BackgroundAnimation extends Animation {

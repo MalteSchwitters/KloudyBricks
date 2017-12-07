@@ -3,25 +3,19 @@
  * 
  * User controlled actor with jump and die animation
  */
-public class Actor extends InteractableObject {
+public class Actor extends Quad implements KeyboardInteractable {
     
     private PVector _startTranslation;
     private boolean _jumpQued = false;
-
-    private Quad _body = new Quad();
 
     private Animation _animJump = new JumpAnimation();
     private Animation _animStart = new StartAnimation();
     private Animation _animDeath = new DeathAnimation();
 
     public Actor() {     
-        super("Actor");         
-        buildGeometry();
-    }
-
-    private void buildGeometry() {
-        _body.setSize(new PVector(20, 30, 30));
-        addChild(_body);
+        super("Actor");   
+        keyboardHandler.registerForKeyboardInput(this);      
+        setSize(new PVector(20, 30, 30));
     }
 
     @Override
@@ -34,6 +28,8 @@ public class Actor extends InteractableObject {
         super.onComponentBeginOverlap(component, other, keyword);
         if (keyword.equals(Collision.COLLISION_OBSTACLE)) {
             endGame();
+        } else if (keyword.equals(Collision.COLLISION_TRIGGER)) {
+            ui.incrementScore();
         }
     }
 
@@ -55,6 +51,11 @@ public class Actor extends InteractableObject {
     }
 
     @Override
+    public boolean keyReleased(int keycode, boolean ctrl, boolean alt, boolean shift) {
+        return false;
+    }
+
+    @Override
     public void setColorInherit(PVector col) {
         super.setColorInherit(col.copy().mult(1.2));
     }
@@ -63,9 +64,9 @@ public class Actor extends InteractableObject {
         if (!_animDeath.isRunning()) {
             gameStarted = true;
             if (_startTranslation == null) {
-                _startTranslation = getTranslation().copy();
+                _startTranslation = getTranslation();
             } else {
-                _animStart.play(this, 2);
+                _animStart.play(this, 1.5);
             }
         }
     }
@@ -74,6 +75,8 @@ public class Actor extends InteractableObject {
         gameStarted = false;
         _animDeath.play(this, 2);
         ui.hideAll();
+        deathSound.rewind();
+        deathSound.play();
     }
 
     private void jump() {
