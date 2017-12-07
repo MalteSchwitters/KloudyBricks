@@ -20,6 +20,7 @@ public class Actor extends Quad implements KeyboardInteractable {
 
     @Override
     public void render(PGraphics g) {
+        
         super.render(g);
     }
 
@@ -57,7 +58,7 @@ public class Actor extends Quad implements KeyboardInteractable {
 
     @Override
     public void setColorInherit(PVector col) {
-        super.setColorInherit(col.copy().mult(1.2));
+        super.setColorInherit(new PVector(col.x, col.y * 1.2, col.z));
     }
 
     private void startNewGame() {
@@ -84,7 +85,7 @@ public class Actor extends Quad implements KeyboardInteractable {
             if (_animJump.isRunning()) {
                 _jumpQued = true;
             } else {
-                _animJump.play(this, 1.2);
+                _animJump.play(this, 1.025);
             }
         }
     }

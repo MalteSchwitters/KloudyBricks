@@ -81,6 +81,7 @@ public class RenderableObject implements Renderable {
 
         long renderTime = System.currentTimeMillis() - startTime;
         if (renderTime > 10) {
+            System.currentTimeMillis();
             println("Warn: Rendering " + _id + " took " + renderTime + " millis.");
         }
 

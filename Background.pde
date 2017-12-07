@@ -1,12 +1,17 @@
+/**
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
+ * 
+ * Animated background of the level.
+ */
 public class Background extends RenderableObject {
 
     public final PVector houseMinSize = new PVector(50, 50, 400);
     public final PVector houseMaxSize = new PVector(80, 80, 500);
     public final int housesPerLevel = 10;
 
-    private RenderableObject _level1 = new RenderableObject("Background 1");
-    private RenderableObject _level2 = new RenderableObject("Background 2");
-    private RenderableObject _level3 = new RenderableObject("Background 3");
+    private RenderableObject _level1 = new RenderableObject("Background L1");
+    private RenderableObject _level2 = new RenderableObject("Background L2");
+    private RenderableObject _level3 = new RenderableObject("Background L3");
     
     public Background() {
         super("background");
@@ -18,12 +23,12 @@ public class Background extends RenderableObject {
 
     private RenderableObject generateHouses(RenderableObject level, PVector translation, int houseCount) {
         float animTime = 1.3 * houseCount;
+        level.setHasCollision(false);
         level.setTranslation(translation);
         for (int i = 1; i <= houseCount; i++) {
             Quad house = new Quad();
             house.setHasCollision(false);
-            PVector size = houseMinSize.copy();
-            house.setSize(size.lerp(houseMaxSize, random(1)));
+            house.setSize(houseMinSize.copy().lerp(houseMaxSize, random(1)));
             level.addChild(house);
             
             float bounds = 300 + houseCount * 20;
@@ -37,12 +42,10 @@ public class Background extends RenderableObject {
 
     @Override
     public void setColorInherit(PVector c) {
-        PVector c1 = c.copy().add(new PVector(40, 40, 40));
-        _level1.setColorInherit(c1);
-        PVector c2 = c.copy().add(new PVector(60, 60, 60));
-        _level2.setColorInherit(c2);
-        PVector c3 = c.copy().add(new PVector(80, 80, 80));
-        _level3.setColorInherit(c3);
+        // the houses in the back should be brighter
+        _level1.setColorInherit(new PVector(c.x, c.y * 0.7, c.z));
+        _level2.setColorInherit(new PVector(c.x, c.y * 0.5, c.z));
+        _level3.setColorInherit(new PVector(c.x, c.y * 0.35, c.z));
     }
 
     private class BackgroundAnimation extends Animation {

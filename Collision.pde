@@ -48,7 +48,7 @@ public class Collision implements Renderable {
 
         // render collision of child objects
         for (RenderableObject child : _collisionFor.getChildren()) {
-            if (child.hasCollision()) {
+            if (child.hasCollision() && child.isEnabled()) {
                 child.getCollision().render(g);
             }
         }
@@ -156,7 +156,7 @@ public class Collision implements Renderable {
         PVector bTranslation = other._extendedBoundingBoxTranslation;
         PVector bSize = other._extendedBoundingBoxSize;
         if (!checkCollision(aTranslation, aSize, bTranslation, bSize)) {
-            // TODO children
+            // TODO children?
             endOverlap(other._collisionFor);
             return false;
         }
