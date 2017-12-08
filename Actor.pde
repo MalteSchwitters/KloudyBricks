@@ -19,18 +19,14 @@ public class Actor extends Quad implements KeyboardInteractable {
     }
 
     @Override
-    public void render(PGraphics g) {
-        
-        super.render(g);
-    }
-
-    @Override
     public void onComponentBeginOverlap(RenderableObject component, RenderableObject other, String keyword) {
         super.onComponentBeginOverlap(component, other, keyword);
         if (keyword.equals(Collision.COLLISION_OBSTACLE)) {
             endGame();
         } else if (keyword.equals(Collision.COLLISION_TRIGGER)) {
             ui.incrementScore();
+            soundScore.rewind();
+            soundScore.play();
         }
     }
 
@@ -76,8 +72,8 @@ public class Actor extends Quad implements KeyboardInteractable {
         gameStarted = false;
         _animDeath.play(this, 2);
         ui.hideAll();
-        deathSound.rewind();
-        deathSound.play();
+        soundDeath.rewind();
+        soundDeath.play();
     }
 
     private void jump() {

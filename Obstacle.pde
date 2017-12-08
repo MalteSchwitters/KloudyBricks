@@ -5,7 +5,13 @@
  */
 public class Obstacle extends RenderableObject {
 
+    public static final float slideInAnimationTime = 1.9;
+
     private Animation _anim = new ObstacleAnimation();
+    private Animation _animSlide1 = new ObstacleSlideInAnimation();
+    private Animation _animSlide2 = new ObstacleSlideInAnimation();
+    private Animation _animSlide3 = new ObstacleSlideInAnimation();
+
     private Quad _pointTrigger = new Quad("trigger");
     private Quad _obstacle1 = new Quad("obstacle");
     private Quad _obstacle2 = new Quad("obstacle");
@@ -63,6 +69,7 @@ public class Obstacle extends RenderableObject {
         clearObstacles();
     }
 
+    @Override
     public void render(PGraphics g) {
 
         // start the animation when game is started, as the initial lag will undo the initial 
@@ -77,6 +84,11 @@ public class Obstacle extends RenderableObject {
         super.render(g);
     }
 
+    public void setColorInherit2(PVector c) {
+        // the houses in the back should be brighter
+        super.setColorInherit(new PVector(c.x, c.y * 1.7, 64));
+    }
+
     public void clearObstacles() {
         _obstacle1.setEnabled(false);
         _obstacle2.setEnabled(false);
@@ -85,33 +97,45 @@ public class Obstacle extends RenderableObject {
         _obstacle5.setEnabled(false);
         _obstacle6.setEnabled(false);
         _obstacle7.setEnabled(false);
+        _animSlide1.cancel();
+        _animSlide2.cancel();
+        _animSlide3.cancel();
         _pointTrigger.setEnabled(false);
     } 
 
     public void randomizeObstacles() {
         clearObstacles();
         _pointTrigger.setEnabled(true);
-        float type = random(10);
+        float type = random(6);
         if (type <= 1) {
             _obstacle1.setEnabled(true);
             _obstacle2.setEnabled(true);
             _obstacle3.setEnabled(true);
+            _animSlide1.play(_obstacle1, slideInAnimationTime);
+            _animSlide2.play(_obstacle2, slideInAnimationTime);
+            _animSlide3.play(_obstacle3, slideInAnimationTime);
         } else if (type <= 2) {
             _obstacle2.setEnabled(true);
             _obstacle3.setEnabled(true);
+            _animSlide1.play(_obstacle2, slideInAnimationTime);
+            _animSlide2.play(_obstacle3, slideInAnimationTime);
         } else if (type <= 2.5) {
             _obstacle3.setEnabled(true);
+            _animSlide1.play(_obstacle3, slideInAnimationTime);
         } else if (type <= 3.8) {
             _obstacle4.setEnabled(true);
+            _animSlide1.play(_obstacle4, slideInAnimationTime);
         } else if (type <= 5) {
             _obstacle4.setEnabled(true);
             _obstacle5.setEnabled(true);
+            _animSlide1.play(_obstacle4, slideInAnimationTime);
+            _animSlide2.play(_obstacle5, slideInAnimationTime);
         } else if (type <= 6) {
             _obstacle6.setEnabled(true);
-            new ObstacleRotationAnimation().play(_obstacle6, 2);
+            _animSlide1.play(_obstacle6, slideInAnimationTime);
         } else {
             _obstacle7.setEnabled(true);
-            new ObstacleUpDownAnimation().play(_obstacle7, 3, random(3));
+            new ObstacleSlideInAnimation().play(_obstacle7, 3, random(3));
         }
     }
     
@@ -130,26 +154,24 @@ public class Obstacle extends RenderableObject {
         }
     }
 
-    private class ObstacleUpDownAnimation extends Animation {
-        public float _targetTranslation = 0;
-
-        public ObstacleUpDownAnimation() {
-            _targetTranslation = (random(2) > 1) ? 50 : 90;
+    private class ObstacleSlideInAnimation extends Animation {
+        
+        @Override
+        public void onAnimationStarted(RenderableObject target) {
+            target.setHasCollision(false);
         }
 
         @Override
         public PVector animateTranslation(PVector translation, float t) {
             //-90 -> -20 -> -90
-            translation.z = -90 + 90 * abs(t * 2 - 1);
+            translation.x = 500 * (1 - t);
             //translation.z = -95 + 250 * (1 - t);
             return translation;
         }
 
         @Override
         public void onAnimationFinished(RenderableObject target) {
-            if (target.isEnabled()) {
-                restart();
-            }
+            target.setHasCollision(true);
         }
     }
 

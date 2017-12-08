@@ -16,6 +16,8 @@ public class World extends RenderableObject {
     private RenderableObject _cameraTarget = new RenderableObject();
 
     public World () {
+        setHasCollision(false);
+
         addChild(_cameraTarget);
         camera.setTarget(_cameraTarget);
         
@@ -47,7 +49,7 @@ public class World extends RenderableObject {
 
         g.colorMode(HSB, 360, 100, 100);
         // lighting
-        g.noStroke();
+        g.stroke(0, 0, 10, 10);
         g.directionalLight(0, 0, 10, -1, 2, -5);
         g.ambientLight(0, 0, 100);
         g.background(getColor().x, getColor().y * 0.3, getColor().z);

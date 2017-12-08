@@ -41,7 +41,9 @@ public class Animation {
             return;
         }
         _target = target;
-        _target.addAnimation(this);
+        if (_target != null) {
+            _target.addAnimation(this);
+        }
         _duration = duration * 1000;
         _startTimeMillis = System.currentTimeMillis() - (long) (start * 1000);
         _running = true;
@@ -57,7 +59,7 @@ public class Animation {
      * nothing otherwise.
      */
     public void restart() {
-        if (_target != null) {
+        if (_duration > 0) {
             _running = true;
             _startTimeMillis = System.currentTimeMillis();
             onAnimationStarted(_target);
@@ -92,9 +94,16 @@ public class Animation {
             float t = (System.currentTimeMillis() - _startTimeMillis) / _duration;
             if (t <= 1) {
                 animate(_target, t);
-                _target.setTranslation(animateTranslation(_target.getTranslation(), t));
-                _target.setRotation_deg(animateRotation(_target.getRotation_deg(), t));
+                if (_target != null) {
+                    _target.setTranslation(animateTranslation(_target.getTranslation(), t));
+                    _target.setRotation_deg(animateRotation(_target.getRotation_deg(), t));
+                }
             } else {
+                animate(_target, 1);
+                if (_target != null) {
+                    _target.setTranslation(animateTranslation(_target.getTranslation(), 1));
+                    _target.setRotation_deg(animateRotation(_target.getRotation_deg(), 1));
+                }
                 _running = false;
                 onAnimationFinished(_target);
             }

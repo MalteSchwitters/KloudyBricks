@@ -41,6 +41,13 @@ public class Background extends RenderableObject {
     }
 
     @Override
+    public void render(PGraphics g) {
+        _level3.render(g);
+        _level2.render(g);
+        _level1.render(g);
+    }
+
+    @Override
     public void setColorInherit(PVector c) {
         // the houses in the back should be brighter
         _level1.setColorInherit(new PVector(c.x, c.y * 0.7, c.z));

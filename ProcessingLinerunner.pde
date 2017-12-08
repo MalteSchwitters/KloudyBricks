@@ -18,8 +18,11 @@ public Camera camera = new Camera();
 public World world = new World();
 public HUD ui = new HUD();
 
-private AudioPlayer deathSound;
-private AudioPlayer _soundtrack;
+public PFont font;
+
+public AudioPlayer soundDeath;
+public AudioPlayer soundScore;
+public AudioPlayer music;
 
 public boolean gameStarted = false;
 
@@ -34,7 +37,9 @@ private int _nextObjectId;
 
 @Override
 public void setup() {
-    size(1280, 768, P3D);
+    //size(1600, 900, P3D);
+    size(1280, 760, P3D);
+    
     frameRate(30);
     float cameraZ = (height / 2.0) / tan(fov / 2.0);
     ratio = (float) width / (float) height;
@@ -46,21 +51,20 @@ public void setup() {
     uiGraphics = createGraphics(width, height, P2D);
     uiGraphics.smooth(8);
 
+    font = createFont("Bangers-Regular.ttf", 32);
+
     // Source: https://opengameart.org/content/red-eclipse-sounds
-    deathSound = new Minim(this).loadFile("death.mp3");
+    Minim m = new Minim(this);
+    soundDeath = m.loadFile("death.mp3");
+    // Source: https://opengameart.org/content/completion-sound
+    soundScore = m.loadFile("score.mp3");
     // Source: https://opengameart.org/content/game-game
-    _soundtrack = new Minim(this).loadFile("soundtrack.mp3");
-    _soundtrack.play();
+    music = m.loadFile("soundtrack.mp3");
+    music.loop();
 }
 
 @Override
 public void draw() {
-    // loop soundtrack
-    if (!_soundtrack.isPlaying()) {
-        _soundtrack.rewind();
-        _soundtrack.play();
-    }
-
     worldGraphics.beginDraw();
     worldGraphics.perspective(fov, ratio, cameraNear, cameraFar);
     camera.render(worldGraphics);
