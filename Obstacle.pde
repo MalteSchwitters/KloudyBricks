@@ -81,12 +81,14 @@ public class Obstacle extends RenderableObject {
         if (!gameStarted) {
             clearObstacles();
         }
+        g.strokeWeight(5);
+        g.stroke(getColor().x, getColor().y, getColor().z  * 1.5);;
         super.render(g);
     }
 
-    public void setColorInherit2(PVector c) {
+    public void setColorInherit(PVector c) {
         // the houses in the back should be brighter
-        super.setColorInherit(new PVector(c.x, c.y * 1.7, 64));
+        super.setColorInherit(new PVector(c.x, c.y * 1., c.z));
     }
 
     public void clearObstacles() {

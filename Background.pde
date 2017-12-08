@@ -42,6 +42,8 @@ public class Background extends RenderableObject {
 
     @Override
     public void render(PGraphics g) {
+        g.strokeWeight(1);
+        g.stroke(0, 0, 10, 5);
         _level3.render(g);
         _level2.render(g);
         _level1.render(g);

@@ -6,11 +6,16 @@
 class HUD implements Renderable {
 
     private Animation _zoomAnim = new ZoomAnimation();
+    private Animation _hintAnim = new ShowHintAnimation();
+    private float _textPositionZ = 0;
+    
     private boolean _hidden = false;
+    private boolean _showHint = false;
+    private String _hint;
     private int _score = 0;
     private int _lastScore = 0;
     private int _highScore = 0;
-    private float _textPositionZ = 0;
+
 
     public HUD() {
         _highScore = loadHighScore();
@@ -19,40 +24,57 @@ class HUD implements Renderable {
     @Override
     public void render(PGraphics g) {
         _zoomAnim.tick();
+        _hintAnim.tick();
         textFont(font);
         textAlign(CENTER, CENTER);
+
+        float centerW = width / 2;
+        float centerH = height / 2;
         if (!_hidden) {
             if (gameStarted) {
-                textSize(60);
-                outlinedText(g, String.valueOf(_score), width / 2, 100);
+                textSize(48);
+                outlinedText(g, String.valueOf(_score), centerW, 100);
+                if (_showHint) {
+                    textSize(32);
+                    outlinedText(g, _hint, centerW, centerH, 0);// height - 60, 0);
+                }
             } else {
-                textSize(64);
-                outlinedText(g, "Press any key to start game", width / 2, height / 2 - 50);
-                
+
+                image(logo, centerW - 320, centerH - 150);
+
                 textSize(32);
-                outlinedText(g, "Avoid obstacles, press space to jump", width / 2, height / 2 + 50);
+                outlinedText(g, "Press any key to start game!", centerW, height - 200);
                 
                 if (_lastScore > 0) {
                     textSize(32);
-                    outlinedText(g, "SCORE: " + _lastScore + "     HIGH SCORE: " + _highScore, width / 2, 200);
+                    outlinedText(g, "SCORE: " + _lastScore + "    HIGH SCORE: " + _highScore, centerW, 150);
                 }
             }
         }
         if (settings.drawFps) {
             textAlign(LEFT, CENTER);
             textSize(24);
-            outlinedText(g, (int) frameRate + " fps", 10, 32);
+            outlinedText(g, (int) frameRate + " fps", 10, 32, 0);
         }
     }
 
-    private void outlinedText(PGraphics g, String text, float x, float y) {
+    private void outlinedText(PGraphics g, String text, float x, float y, float z) {
         fill(10);
-        text(text, x - 2, y, _textPositionZ);
-        text(text, x + 2, y, _textPositionZ);
-        text(text, x, y - 2, _textPositionZ);
-        text(text, x, y + 2, _textPositionZ);
+        float thinkness = 2;
+        text(text, x - thinkness, y, z);
+        text(text, x + thinkness, y, z);
+        text(text, x, y - thinkness, z);
+        text(text, x, y + thinkness, z);
+        text(text, x - thinkness, y - thinkness, z);
+        text(text, x + thinkness, y + thinkness, z);
+        text(text, x + thinkness, y - thinkness, z);
+        text(text, x - thinkness, y + thinkness, z);
         fill(240);
-        text(text, x, y, _textPositionZ);
+        text(text, x, y, z);
+    }
+
+    private void outlinedText(PGraphics g, String text, float x, float y) {
+        outlinedText(g, text, x, y, _textPositionZ);
     }
 
     public void incrementScore() {
@@ -73,6 +95,23 @@ class HUD implements Renderable {
         _score = 0;
         _hidden = false;
         _zoomAnim.play(null, 0.2);
+    }
+
+    public void showHint(String hint) {
+        _showHint = true;
+        _hint = hint;
+        _hintAnim.play(null, 3);
+    }
+
+    /**
+     * Shows/hides the hint text
+     */
+    private class ShowHintAnimation extends Animation {
+        
+        @Override
+        public void onAnimationFinished(RenderableObject target) {
+            _showHint = false;
+        }
     }
 
     /**

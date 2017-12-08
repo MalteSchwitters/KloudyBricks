@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.awt.Color;
 
+// game objects
 public MouseInputHandler mouseHandler = new MouseInputHandler();
 public KeyboardInputHandler keyboardHandler = new KeyboardInputHandler();
 public Settings settings = new Settings();
@@ -18,17 +19,19 @@ public Camera camera = new Camera();
 public World world = new World();
 public HUD ui = new HUD();
 
+// assets
 public PFont font;
-
+public PImage logo;
 public AudioPlayer soundDeath;
 public AudioPlayer soundScore;
 public AudioPlayer music;
 
-public boolean gameStarted = false;
-
+// graphics
 private PGraphics worldGraphics;
 private PGraphics uiGraphics;
 
+// runtime data
+public boolean gameStarted = false;
 private float fov = PI / 3.0;
 private float ratio;
 private float cameraNear;
@@ -46,20 +49,21 @@ public void setup() {
     cameraNear = cameraZ / 100.0;
     cameraFar = cameraZ * 10.0;
 
+    // create graphics
     worldGraphics = createGraphics(width, height, P3D);
     worldGraphics.colorMode(HSB, 360, 100, 100);
     uiGraphics = createGraphics(width, height, P2D);
     uiGraphics.smooth(8);
 
+    // load assets
+    //font = createFont("PressStart2P-Regular.ttf", 32);
     font = createFont("Bangers-Regular.ttf", 32);
+    logo = loadImage("Logo.png");
 
-    // Source: https://opengameart.org/content/red-eclipse-sounds
     Minim m = new Minim(this);
-    soundDeath = m.loadFile("death.mp3");
-    // Source: https://opengameart.org/content/completion-sound
-    soundScore = m.loadFile("score.mp3");
-    // Source: https://opengameart.org/content/game-game
-    music = m.loadFile("soundtrack.mp3");
+    soundDeath = m.loadFile("death.mp3"); // Source: https://opengameart.org/content/red-eclipse-sounds
+    soundScore = m.loadFile("score.mp3"); // Source: https://opengameart.org/content/completion-sound
+    music = m.loadFile("soundtrack.mp3"); // Source: https://opengameart.org/content/game-game
     music.loop();
 }
 

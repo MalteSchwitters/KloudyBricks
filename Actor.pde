@@ -54,7 +54,7 @@ public class Actor extends Quad implements KeyboardInteractable {
 
     @Override
     public void setColorInherit(PVector col) {
-        super.setColorInherit(new PVector(col.x, col.y * 1.2, col.z));
+        super.setColorInherit(new PVector(col.x, col.y, col.z));
     }
 
     private void startNewGame() {
@@ -62,8 +62,21 @@ public class Actor extends Quad implements KeyboardInteractable {
             gameStarted = true;
             if (_startTranslation == null) {
                 _startTranslation = getTranslation();
+                ui.showHint("Avoid obstacles, press space to jump!");
             } else {
                 _animStart.play(this, 1.5);
+                float x = random(5);
+                if (x <= 1) {
+                    ui.showHint("May the Kloud be with you");
+                } else if (x <= 2) {
+                    ui.showHint("Go for it, Superbrick");
+                } else if (x <= 3) {
+                    ui.showHint("A brick does not give up so easily");
+                } else if (x <= 4) {
+                    ui.showHint("This time you will make it");
+                } else {
+                    ui.showHint("Don't wish it were easier, wish you were better");
+                }
             }
         }
     }

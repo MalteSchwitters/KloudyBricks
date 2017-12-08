@@ -49,23 +49,22 @@ public class World extends RenderableObject {
 
         g.colorMode(HSB, 360, 100, 100);
         // lighting
-        g.stroke(0, 0, 10, 10);
         g.directionalLight(0, 0, 10, -1, 2, -5);
         g.ambientLight(0, 0, 100);
         g.background(getColor().x, getColor().y * 0.3, getColor().z);
         
+        if (gameStarted) {
+            for (RenderableObject child : getChildren()) {
+                _actor.checkCollision(child);
+                if (settings.renderCollision) {
+                    child.getCollision().render(g);
+                }
+            }
+        }
 
         // poor performance
         // g.hint(ENABLE_DEPTH_SORT);
         super.render(g);
-
-        // check collisions
-        for (RenderableObject child : getChildren()) {
-            _actor.checkCollision(child);
-            if (settings.renderCollision) {
-                child.getCollision().render(g);
-            }
-        }
     }
 
     private class ColorChangeAnimation extends Animation {
