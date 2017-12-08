@@ -83,7 +83,6 @@ class HUD implements Renderable {
         @Override
         public void animate(RenderableObject target, float t) {
             _textPositionZ = 50 * t;
-            println(_textPositionZ);
         }
     }
 }
