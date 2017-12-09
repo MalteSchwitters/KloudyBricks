@@ -41,7 +41,7 @@ class HUD implements Renderable {
                 image(logo, centerW - 320, centerH - 150);
 
                 textSize(32);
-                outlinedText(g, "Press any key to start game!", centerW, height - 200);
+                outlinedText(g, "Press any key to start playing!", centerW, height - 200);
                 
                 if (_lastScore > 0) {
                     textSize(32);

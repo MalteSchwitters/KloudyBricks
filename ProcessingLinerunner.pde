@@ -64,7 +64,12 @@ public void setup() {
     soundDeath = m.loadFile("death.mp3"); // Source: https://opengameart.org/content/red-eclipse-sounds
     soundScore = m.loadFile("score.mp3"); // Source: https://opengameart.org/content/completion-sound
     music = m.loadFile("soundtrack.mp3"); // Source: https://opengameart.org/content/game-game
-    music.loop();
+    new Thread(){
+        @Override
+        public void run() {
+            music.loop();
+        }
+    }.start();
 }
 
 @Override
