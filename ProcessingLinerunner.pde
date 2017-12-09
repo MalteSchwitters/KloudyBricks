@@ -56,7 +56,7 @@ public void setup() {
     uiGraphics.smooth(8);
 
     // load assets
-    //font = createFont("PressStart2P-Regular.ttf", 32);
+    // font = createFont("PressStart2P-Regular.ttf", 32);
     font = createFont("Bangers-Regular.ttf", 32);
     logo = loadImage("Logo.png");
 

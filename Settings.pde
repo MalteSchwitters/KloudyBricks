@@ -10,6 +10,7 @@ class Settings implements KeyboardInteractable {
     public boolean renderCollision = false;
     public boolean renderGeometry = true;
     public boolean drawFps = false;
+    public boolean mute = false;
 
     // input settings
     public float cameraInputMultX = 1;
@@ -20,6 +21,7 @@ class Settings implements KeyboardInteractable {
     
     public int keymapJump = KeyEvent.VK_SPACE;
     public int keymapDrawFps = KeyEvent.VK_F;
+    public int keymapMute = KeyEvent.VK_M;
     public int keymapGeometryOnly = KeyEvent.VK_1;
     public int keymapCollisionOnly = KeyEvent.VK_2;
     public int keymapGeometryAndCollision = KeyEvent.VK_3;
@@ -41,6 +43,8 @@ class Settings implements KeyboardInteractable {
             renderGeometry = true;
         } else if (keycode == keymapDrawFps) {
             drawFps = !drawFps;
+        } else if (keycode == keymapMute) {
+            mute = !mute;
         }
         return false;
     }

@@ -6,11 +6,9 @@
 class HUD implements Renderable {
 
     private Animation _zoomAnim = new ZoomAnimation();
-    private Animation _hintAnim = new ShowHintAnimation();
     private float _textPositionZ = 0;
     
     private boolean _hidden = false;
-    private boolean _showHint = false;
     private String _hint;
     private int _score = 0;
     private int _lastScore = 0;
@@ -24,7 +22,6 @@ class HUD implements Renderable {
     @Override
     public void render(PGraphics g) {
         _zoomAnim.tick();
-        _hintAnim.tick();
         textFont(font);
         textAlign(CENTER, CENTER);
 
@@ -33,10 +30,11 @@ class HUD implements Renderable {
         if (!_hidden) {
             if (gameStarted) {
                 textSize(48);
-                outlinedText(g, String.valueOf(_score), centerW, 100);
-                if (_showHint) {
+                if (_score > 0) {
+                    outlinedText(g, String.valueOf(_score), centerW, 100);
+                } else {
                     textSize(32);
-                    outlinedText(g, _hint, centerW, centerH, 0);// height - 60, 0);
+                    outlinedText(g, _hint, centerW, 100);
                 }
             } else {
 
@@ -94,24 +92,12 @@ class HUD implements Renderable {
         }
         _score = 0;
         _hidden = false;
-        _zoomAnim.play(null, 0.2);
+        // logo cannot be "zoomed"
+        // _zoomAnim.play(null, 0.2);
     }
 
     public void showHint(String hint) {
-        _showHint = true;
         _hint = hint;
-        _hintAnim.play(null, 3);
-    }
-
-    /**
-     * Shows/hides the hint text
-     */
-    private class ShowHintAnimation extends Animation {
-        
-        @Override
-        public void onAnimationFinished(RenderableObject target) {
-            _showHint = false;
-        }
     }
 
     /**

@@ -5,8 +5,6 @@
  */
 public class Obstacle extends RenderableObject {
 
-    public static final float slideInAnimationTime = 1.9;
-
     private Animation _anim = new ObstacleAnimation();
     private Animation _animSlide1 = new ObstacleSlideInAnimation();
     private Animation _animSlide2 = new ObstacleSlideInAnimation();
@@ -16,11 +14,10 @@ public class Obstacle extends RenderableObject {
     private Quad _obstacle1 = new Quad("obstacle");
     private Quad _obstacle2 = new Quad("obstacle");
     private Quad _obstacle3 = new Quad("obstacle");
-    private Quad _obstacle4 = new Quad("obstacle");
-    private Quad _obstacle5 = new Quad("obstacle");
-    private Quad _obstacle6 = new Quad("obstacle");
-    private Quad _obstacle7 = new Quad("obstacle");
     private float _animationStartTime;
+
+    private float _mainAnimTime = 5;
+    private float _slideInAnimTime = 1.5;
 
     public Obstacle(float animationStartTime) {
         _animationStartTime = animationStartTime;
@@ -31,40 +28,17 @@ public class Obstacle extends RenderableObject {
         _pointTrigger.setVisible(false);
         addChild(_pointTrigger);
 
-        _obstacle1.setTranslation(new PVector(0, -30, -90));
         _obstacle1.setSize(new PVector(20, 20, 20));
         _obstacle1.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
         addChild(_obstacle1);
 
-        _obstacle2.setTranslation(new PVector(0, 0, -90));
         _obstacle2.setSize(new PVector(20, 20, 20));
         _obstacle2.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
         addChild(_obstacle2);
 
-        _obstacle3.setTranslation(new PVector(0, 30, -90));
         _obstacle3.setSize(new PVector(20, 20, 20));
         _obstacle3.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
         addChild(_obstacle3);
-
-        _obstacle4.setTranslation(new PVector(0, -15, -70));
-        _obstacle4.setSize(new PVector(20, 20, 20));
-        _obstacle4.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
-        addChild(_obstacle4);
-        
-        _obstacle5.setTranslation(new PVector(0, 15, -70));
-        _obstacle5.setSize(new PVector(20, 20, 20));
-        _obstacle5.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
-        addChild(_obstacle5);
-
-        _obstacle6.setTranslation(new PVector(0, 0, -20));
-        _obstacle6.setSize(new PVector(20, 20, 20));
-        _obstacle6.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
-        addChild(_obstacle6);
-
-        _obstacle7.setTranslation(new PVector(0, 0, -55));
-        _obstacle7.setSize(new PVector(20, 20, 20));
-        _obstacle7.getCollision().setKeyword(Collision.COLLISION_OBSTACLE);
-        addChild(_obstacle7);
 
         clearObstacles();
     }
@@ -75,7 +49,7 @@ public class Obstacle extends RenderableObject {
         // start the animation when game is started, as the initial lag will undo the initial 
         // start time of the animation
         if (gameStarted && !_anim.isRunning()) {
-            _anim.play(this, 6, 6 * _animationStartTime);
+            _anim.play(this, _mainAnimTime, _mainAnimTime * _animationStartTime);
         } 
 
         if (!gameStarted) {
@@ -95,10 +69,6 @@ public class Obstacle extends RenderableObject {
         _obstacle1.setEnabled(false);
         _obstacle2.setEnabled(false);
         _obstacle3.setEnabled(false);
-        _obstacle4.setEnabled(false);
-        _obstacle5.setEnabled(false);
-        _obstacle6.setEnabled(false);
-        _obstacle7.setEnabled(false);
         _animSlide1.cancel();
         _animSlide2.cancel();
         _animSlide3.cancel();
@@ -106,38 +76,52 @@ public class Obstacle extends RenderableObject {
     } 
 
     public void randomizeObstacles() {
+        
         clearObstacles();
         _pointTrigger.setEnabled(true);
-        float type = random(6);
+        float type = random(7);
         if (type <= 1) {
-            _obstacle1.setEnabled(true);
-            _obstacle2.setEnabled(true);
-            _obstacle3.setEnabled(true);
-            _animSlide1.play(_obstacle1, slideInAnimationTime);
-            _animSlide2.play(_obstacle2, slideInAnimationTime);
-            _animSlide3.play(_obstacle3, slideInAnimationTime);
+            // 3 obstacles on the ground
+            _obstacle1.setTranslation(new PVector(0, -30, -90));
+            _obstacle2.setTranslation(new PVector(0, 0, -90));
+            _obstacle3.setTranslation(new PVector(0, 30, -90));
+            _animSlide1.play(_obstacle1, _slideInAnimTime);
+            _animSlide2.play(_obstacle2, _slideInAnimTime, 0.05);
+            _animSlide3.play(_obstacle3, _slideInAnimTime, 0.1);
         } else if (type <= 2) {
-            _obstacle2.setEnabled(true);
-            _obstacle3.setEnabled(true);
-            _animSlide1.play(_obstacle2, slideInAnimationTime);
-            _animSlide2.play(_obstacle3, slideInAnimationTime);
+            // two obstacles on the ground
+            _obstacle1.setTranslation(new PVector(0, -15, -90));
+            _obstacle2.setTranslation(new PVector(0, 15, -90));
+            _animSlide1.play(_obstacle1, _slideInAnimTime);
+            _animSlide2.play(_obstacle2, _slideInAnimTime, 0.05);
         } else if (type <= 2.5) {
-            _obstacle3.setEnabled(true);
-            _animSlide1.play(_obstacle3, slideInAnimationTime);
+            // one obstacle on the ground
+            _obstacle1.setTranslation(new PVector(0, 0, -90));
+            _animSlide1.play(_obstacle1, _slideInAnimTime);
         } else if (type <= 3.8) {
-            _obstacle4.setEnabled(true);
-            _animSlide1.play(_obstacle4, slideInAnimationTime);
+            // one obstacle in the middle
+            _obstacle1.setTranslation(new PVector(0, 0, -90));
+            _obstacle2.setTranslation(new PVector(0, 0, -60));
+            _animSlide1.play(_obstacle1, _slideInAnimTime, 0.05);
+            _animSlide2.play(_obstacle2, _slideInAnimTime);
         } else if (type <= 5) {
-            _obstacle4.setEnabled(true);
-            _obstacle5.setEnabled(true);
-            _animSlide1.play(_obstacle4, slideInAnimationTime);
-            _animSlide2.play(_obstacle5, slideInAnimationTime);
+            // two obstacles in the middle
+            _obstacle1.setTranslation(new PVector(0, -15, -70));
+            _obstacle2.setTranslation(new PVector(0, 15, -70));
+            _animSlide1.play(_obstacle1, _slideInAnimTime);
+            _animSlide2.play(_obstacle2, _slideInAnimTime, 0.05);
         } else if (type <= 6) {
-            _obstacle6.setEnabled(true);
-            _animSlide1.play(_obstacle6, slideInAnimationTime);
+            // one obstacle on top
+            _obstacle1.setTranslation(new PVector(0, -15, -20));
+            _animSlide1.play(_obstacle1, _slideInAnimTime);
         } else {
-            _obstacle7.setEnabled(true);
-            new ObstacleSlideInAnimation().play(_obstacle7, 3, random(3));
+             // two obstacles on the ground
+            _obstacle1.setTranslation(new PVector(0, -15, -90));
+            _obstacle2.setTranslation(new PVector(0, 15, -90));
+            _obstacle3.setTranslation(new PVector(0, 0, -60));
+            _animSlide1.play(_obstacle1, _slideInAnimTime);
+            _animSlide2.play(_obstacle2, _slideInAnimTime, 0.05);
+            _animSlide3.play(_obstacle3, _slideInAnimTime, 0.1);
         }
     }
     
@@ -160,6 +144,7 @@ public class Obstacle extends RenderableObject {
         
         @Override
         public void onAnimationStarted(RenderableObject target) {
+            target.setEnabled(true);
             target.setHasCollision(false);
         }
 
@@ -179,8 +164,8 @@ public class Obstacle extends RenderableObject {
 
     private class ObstacleAnimation extends Animation {
 
-        private float _yMin = -500;
-        private float _yMax = 500;
+        private float _yMin = -400;
+        private float _yMax = 400;
 
         @Override
         public PVector animateTranslation(PVector translation, float t) {
