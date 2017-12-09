@@ -25,8 +25,10 @@ public class Actor extends Quad implements KeyboardInteractable {
             endGame();
         } else if (keyword.equals(Collision.COLLISION_TRIGGER)) {
             ui.incrementScore();
-            soundScore.rewind();
-            soundScore.play();
+            if (!settings.muted) {
+                soundScore.rewind();
+                soundScore.play();
+            }
         }
     }
 
@@ -37,12 +39,14 @@ public class Actor extends Quad implements KeyboardInteractable {
 
     @Override
     public boolean keyPressed(int keycode, boolean ctrl, boolean alt, boolean shift) {
-        if (!gameStarted) {
-            startNewGame();
-            return true;
-        }
         if (keycode == settings.keymapJump) {
-            jump();
+            if (gameStarted) {
+                jump();
+                return true;
+            } else if (!_animDeath.isRunning()) {
+                startNewGame();
+                return true;
+            }
         }
         return false;
     }
@@ -85,8 +89,10 @@ public class Actor extends Quad implements KeyboardInteractable {
         gameStarted = false;
         _animDeath.play(this, 2);
         ui.hideAll();
-        soundDeath.rewind();
-        soundDeath.play();
+        if (!settings.muted) {
+            soundDeath.rewind();
+            soundDeath.play();
+        }
     }
 
     private void jump() {

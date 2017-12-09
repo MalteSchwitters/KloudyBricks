@@ -25,6 +25,7 @@ public PImage logo;
 public AudioPlayer soundDeath;
 public AudioPlayer soundScore;
 public AudioPlayer music;
+public AudioPlayer music2;
 
 // graphics
 private PGraphics worldGraphics;
@@ -63,13 +64,11 @@ public void setup() {
     Minim m = new Minim(this);
     soundDeath = m.loadFile("death.mp3"); // Source: https://opengameart.org/content/red-eclipse-sounds
     soundScore = m.loadFile("score.mp3"); // Source: https://opengameart.org/content/completion-sound
-    music = m.loadFile("soundtrack.mp3"); // Source: https://opengameart.org/content/game-game
-    new Thread(){
-        @Override
-        public void run() {
-            music.loop();
-        }
-    }.start();
+    music2 = m.loadFile("soundtrack.mp3");
+    music = m.loadFile("soundtrack1.mp3"); // Source: https://opengameart.org/content/game-game
+    music.loop();
+    music2.loop();
+    music2.mute();
 }
 
 @Override

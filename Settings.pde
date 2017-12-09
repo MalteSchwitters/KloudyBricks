@@ -10,7 +10,7 @@ class Settings implements KeyboardInteractable {
     public boolean renderCollision = false;
     public boolean renderGeometry = true;
     public boolean drawFps = false;
-    public boolean mute = false;
+    public boolean muted = false;
 
     // input settings
     public float cameraInputMultX = 1;
@@ -30,6 +30,8 @@ class Settings implements KeyboardInteractable {
         keyboardHandler.registerForKeyboardInput(this);
     }
 
+    boolean temp;
+
     @Override
     public boolean keyPressed(int keycode, boolean ctrl, boolean alt, boolean shift) {
         if (keycode == keymapGeometryOnly) {
@@ -44,7 +46,14 @@ class Settings implements KeyboardInteractable {
         } else if (keycode == keymapDrawFps) {
             drawFps = !drawFps;
         } else if (keycode == keymapMute) {
-            mute = !mute;
+            temp = !temp;
+            if (temp) {
+                music.mute();
+                music2.unmute();
+            } else {
+                music.unmute();
+                music2.mute();
+            }
         }
         return false;
     }
