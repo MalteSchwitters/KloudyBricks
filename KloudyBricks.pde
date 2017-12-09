@@ -3,13 +3,12 @@
  * 
  * Main class
  */
-
 import ddf.minim.*;
+import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.LinkedList;
-import java.awt.event.KeyEvent;
 import java.io.*;
-import java.awt.Color;
 
 // game objects
 public MouseInputHandler mouseHandler = new MouseInputHandler();

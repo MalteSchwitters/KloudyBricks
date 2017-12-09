@@ -1,5 +1,5 @@
 /**
- y* Malte Schwitters 2017, Interactive 3D-Graphic with Processing
+ * Malte Schwitters 2017, Interactive 3D-Graphic with Processing
  * 
  * Static utility functions for common operations like vector rotation. 
  */

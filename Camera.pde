@@ -17,7 +17,7 @@ public class Camera implements Renderable, MouseInteractable {
     private float _mouseY = 0;
 
     public Camera () {
-        mouseHandler.registerForMouseInput(this);
+        // mouseHandler.registerForMouseInput(this);
     }
 
     @Override
