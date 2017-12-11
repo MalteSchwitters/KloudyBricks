@@ -164,8 +164,8 @@ public class Obstacle extends RenderableObject {
 
     private class ObstacleAnimation extends Animation {
 
-        private float _yMin = -400;
-        private float _yMax = 400;
+        private float _yMin = -450;
+        private float _yMax = 450;
 
         @Override
         public PVector animateTranslation(PVector translation, float t) {

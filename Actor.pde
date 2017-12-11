@@ -100,7 +100,7 @@ public class Actor extends Quad implements KeyboardInteractable {
             if (_animJump.isRunning()) {
                 _jumpQued = true;
             } else {
-                _animJump.play(this, 1.025);
+                _animJump.play(this, .9);
             }
         }
     }

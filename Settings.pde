@@ -22,15 +22,13 @@ class Settings implements KeyboardInteractable {
     public int keymapJump = KeyEvent.VK_SPACE;
     public int keymapDrawFps = KeyEvent.VK_F;
     public int keymapMute = KeyEvent.VK_M;
-    public int keymapGeometryOnly = KeyEvent.VK_1;
+    public int keymapGeometryOnly = KeyEvent.VK_1; 
     public int keymapCollisionOnly = KeyEvent.VK_2;
     public int keymapGeometryAndCollision = KeyEvent.VK_3;
 
     public Settings() {
         keyboardHandler.registerForKeyboardInput(this);
     }
-
-    boolean temp;
 
     @Override
     public boolean keyPressed(int keycode, boolean ctrl, boolean alt, boolean shift) {
@@ -46,13 +44,11 @@ class Settings implements KeyboardInteractable {
         } else if (keycode == keymapDrawFps) {
             drawFps = !drawFps;
         } else if (keycode == keymapMute) {
-            temp = !temp;
-            if (temp) {
+            muted = !muted;
+            if (muted) {
                 music.mute();
-                music2.unmute();
             } else {
                 music.unmute();
-                music2.mute();
             }
         }
         return false;
