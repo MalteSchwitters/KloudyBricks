@@ -5,8 +5,8 @@
  */
 class HUD implements Renderable {
 
-    private Animation _zoomAnim = new ZoomAnimation();
-    private float _textPositionZ = 0;
+    private Animation _scoreAnim = new IncrementScoreAnimation();
+    private float _textScoreZ = 0;
     
     private boolean _hidden = false;
     private String _hint;
@@ -21,7 +21,7 @@ class HUD implements Renderable {
 
     @Override
     public void render(PGraphics g) {
-        _zoomAnim.tick();
+        _scoreAnim.tick();
         textFont(font);
         textAlign(CENTER, CENTER);
 
@@ -31,18 +31,15 @@ class HUD implements Renderable {
             if (gameStarted) {
                 textSize(48);
                 if (_score > 0) {
-                    outlinedText(g, String.valueOf(_score), centerW, 100);
+                    outlinedText(g, String.valueOf(_score), centerW, 100, _textScoreZ);
                 } else {
                     textSize(32);
                     outlinedText(g, _hint, centerW, 100);
                 }
             } else {
-
                 image(logo, centerW - 320, centerH - 150);
-
                 textSize(32);
-                outlinedText(g, "Press [space] to start playing!", centerW, height - 200);
-                
+                outlinedText(g, "Press [space] to start playing!", centerW, height - 200, 0);
                 if (_lastScore > 0) {
                     textSize(32);
                     outlinedText(g, "SCORE: " + _lastScore + "    HIGH SCORE: " + _highScore, centerW, 150);
@@ -52,7 +49,7 @@ class HUD implements Renderable {
         if (settings.drawFps) {
             textAlign(LEFT, CENTER);
             textSize(24);
-            outlinedText(g, (int) frameRate + " fps", 10, 32, 0);
+            outlinedText(g, (int) frameRate + " fps", 10, 32);
         }
     }
 
@@ -72,12 +69,12 @@ class HUD implements Renderable {
     }
 
     private void outlinedText(PGraphics g, String text, float x, float y) {
-        outlinedText(g, text, x, y, _textPositionZ);
+        outlinedText(g, text, x, y, 0);
     }
 
     public void incrementScore() {
         _score++;
-        _zoomAnim.play(null, 0.2);
+        _scoreAnim.play(null, 0.2);
     }
 
     public void hideAll() {
@@ -92,8 +89,6 @@ class HUD implements Renderable {
         }
         _score = 0;
         _hidden = false;
-        // logo cannot be "zoomed"
-        // _zoomAnim.play(null, 0.2);
     }
 
     public void showHint(String hint) {
@@ -103,11 +98,11 @@ class HUD implements Renderable {
     /**
      * Zooms in the text by animationg th z position
      */
-    private class ZoomAnimation extends Animation {
+    private class IncrementScoreAnimation extends Animation {
     
         @Override
         public void animate(RenderableObject target, float t) {
-            _textPositionZ = 50 * t;
+            _textScoreZ = 50 * t;
         }
     }
 }

@@ -32,10 +32,6 @@ private PGraphics uiGraphics;
 
 // runtime data
 public boolean gameStarted = false;
-private float fov = PI / 3.0;
-private float ratio;
-private float cameraNear;
-private float cameraFar;
 private int _nextObjectId;
 
 @Override
@@ -44,10 +40,6 @@ public void setup() {
     size(1280, 760, P3D);
     
     frameRate(30);
-    float cameraZ = (height / 2.0) / tan(fov / 2.0);
-    ratio = (float) width / (float) height;
-    cameraNear = cameraZ / 100.0;
-    cameraFar = cameraZ * 10.0;
 
     // create graphics
     worldGraphics = createGraphics(width, height, P3D);
@@ -56,7 +48,6 @@ public void setup() {
     uiGraphics.smooth(8);
 
     // load assets
-    // font = createFont("PressStart2P-Regular.ttf", 32);
     font = createFont("Bangers-Regular.ttf", 32);
     logo = loadImage("Logo.png");
 
@@ -75,7 +66,6 @@ public void draw() {
     long start = System.currentTimeMillis();
 
     worldGraphics.beginDraw();
-    //worldGraphics.perspective(fov, ratio, cameraNear, cameraFar);
     camera.render(worldGraphics);
     world.render(worldGraphics);
     worldGraphics.endDraw();
