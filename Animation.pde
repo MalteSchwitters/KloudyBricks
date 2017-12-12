@@ -73,7 +73,7 @@ public class Animation {
     public void cancel() {
         if (isRunning()) {
             _running = false;
-            onAnimationFinished(_target);
+            //onAnimationFinished(_target);
         }
     }
 
@@ -92,7 +92,7 @@ public class Animation {
     public void tick() {
         if (isRunning()) {
             float t = (System.currentTimeMillis() - _startTimeMillis) / _duration;
-            if (t <= 1) {
+            if (t < 1) {
                 animate(_target, t);
                 if (_target != null) {
                     _target.setTranslation(animateTranslation(_target.getTranslation(), t));

@@ -82,6 +82,7 @@ public class Actor extends Quad implements KeyboardInteractable {
                     ui.showHint("Don't wish it were easier, wish you were better");
                 }
             }
+            world.syncAnimations();
         }
     }
 

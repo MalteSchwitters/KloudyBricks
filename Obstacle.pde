@@ -49,7 +49,7 @@ public class Obstacle extends RenderableObject {
         // start the animation when game is started, as the initial lag will undo the initial 
         // start time of the animation
         if (gameStarted && !_anim.isRunning()) {
-            _anim.play(this, _mainAnimTime, _mainAnimTime * _animationStartTime);
+            //_anim.play(this, _mainAnimTime, _mainAnimTime * _animationStartTime);
         } 
 
         if (!gameStarted) {
@@ -63,6 +63,11 @@ public class Obstacle extends RenderableObject {
     public void setColorInherit(PVector c) {
         // the houses in the back should be brighter
         super.setColorInherit(new PVector(c.x, c.y * 1., c.z));
+    }
+
+    public void syncAnimation() {
+        _anim.cancel();
+        _anim.play(this, _mainAnimTime, _mainAnimTime * _animationStartTime);
     }
 
     public void clearObstacles() {
@@ -177,8 +182,8 @@ public class Obstacle extends RenderableObject {
         public void onAnimationFinished(RenderableObject target) {
             if (gameStarted) {
                 randomizeObstacles();
+                restart();
             }
-            restart();
         }
     }
 

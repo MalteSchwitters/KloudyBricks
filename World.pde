@@ -12,6 +12,10 @@ public class World extends RenderableObject {
 
     private Actor _actor = new Actor();
     private Quad _ground = new Quad();
+    private Obstacle _obs1 = new Obstacle(0.25);
+    private Obstacle _obs2 = new Obstacle(0.50);
+    private Obstacle _obs3 = new Obstacle(0.75);
+    private Obstacle _obs4 = new Obstacle(1.00);
     private Background _background = new Background();
     private RenderableObject _cameraTarget = new RenderableObject();
 
@@ -22,9 +26,10 @@ public class World extends RenderableObject {
         camera.setTarget(_cameraTarget);
         
         // create obstacles
-        for (int i = 0; i < 4; i++) {
-            addChild(new Obstacle(1 - i / 4f));
-        }
+        addChild(_obs1);
+        addChild(_obs2);
+        addChild(_obs3);
+        addChild(_obs4);
 
         // init ground
         _ground.setSize(new PVector(20, 1000, 100));
@@ -65,6 +70,13 @@ public class World extends RenderableObject {
         // poor performance
         // g.hint(ENABLE_DEPTH_SORT);
         super.render(g);
+    }
+
+    public void syncAnimations() {
+        _obs1.syncAnimation();
+        _obs2.syncAnimation();
+        _obs3.syncAnimation();
+        _obs4.syncAnimation();
     }
 
     private class ColorChangeAnimation extends Animation {
