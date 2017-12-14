@@ -56,7 +56,7 @@ public class Obstacle extends RenderableObject {
             clearObstacles();
         }
         g.strokeWeight(5);
-        g.stroke(getColor().x, getColor().y, getColor().z  * 1.5);;
+        g.stroke(getColor().x, getColor().y, getColor().z  * 1.5);
         super.render(g);
     }
 
@@ -91,14 +91,14 @@ public class Obstacle extends RenderableObject {
             _obstacle2.setTranslation(new PVector(0, 0, -90));
             _obstacle3.setTranslation(new PVector(0, 30, -90));
             _animSlide1.play(_obstacle1, _slideInAnimTime);
-            _animSlide2.play(_obstacle2, _slideInAnimTime, 0.05);
-            _animSlide3.play(_obstacle3, _slideInAnimTime, 0.1);
+            _animSlide2.play(_obstacle2, _slideInAnimTime);
+            _animSlide3.play(_obstacle3, _slideInAnimTime);
         } else if (type <= 2) {
             // two obstacles on the ground
             _obstacle1.setTranslation(new PVector(0, -15, -90));
             _obstacle2.setTranslation(new PVector(0, 15, -90));
             _animSlide1.play(_obstacle1, _slideInAnimTime);
-            _animSlide2.play(_obstacle2, _slideInAnimTime, 0.05);
+            _animSlide2.play(_obstacle2, _slideInAnimTime);
         } else if (type <= 2.5) {
             // one obstacle on the ground
             _obstacle1.setTranslation(new PVector(0, 0, -90));
@@ -107,14 +107,14 @@ public class Obstacle extends RenderableObject {
             // one obstacle in the middle
             _obstacle1.setTranslation(new PVector(0, 0, -90));
             _obstacle2.setTranslation(new PVector(0, 0, -60));
-            _animSlide1.play(_obstacle1, _slideInAnimTime, 0.05);
+            _animSlide1.play(_obstacle1, _slideInAnimTime);
             _animSlide2.play(_obstacle2, _slideInAnimTime);
         } else if (type <= 5) {
             // two obstacles in the middle
             _obstacle1.setTranslation(new PVector(0, -15, -70));
             _obstacle2.setTranslation(new PVector(0, 15, -70));
             _animSlide1.play(_obstacle1, _slideInAnimTime);
-            _animSlide2.play(_obstacle2, _slideInAnimTime, 0.05);
+            _animSlide2.play(_obstacle2, _slideInAnimTime);
         } else if (type <= 6) {
             // one obstacle on top
             _obstacle1.setTranslation(new PVector(0, -15, -20));
@@ -125,8 +125,8 @@ public class Obstacle extends RenderableObject {
             _obstacle2.setTranslation(new PVector(0, 15, -90));
             _obstacle3.setTranslation(new PVector(0, 0, -60));
             _animSlide1.play(_obstacle1, _slideInAnimTime);
-            _animSlide2.play(_obstacle2, _slideInAnimTime, 0.05);
-            _animSlide3.play(_obstacle3, _slideInAnimTime, 0.1);
+            _animSlide2.play(_obstacle2, _slideInAnimTime);
+            _animSlide3.play(_obstacle3, _slideInAnimTime);
         }
     }
     

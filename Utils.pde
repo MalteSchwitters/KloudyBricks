@@ -3,6 +3,11 @@
  * 
  * Static utility functions for common operations like vector rotation. 
  */
+
+
+/**
+ * Rotate vector around x, y and z axii
+ */
 public PVector unrotateVector(PVector translation, PVector rotation) {
     PVector rotatedTranslation = translation;
     rotatedTranslation = rotateVectorX(rotatedTranslation, -rotation.x);
@@ -11,6 +16,10 @@ public PVector unrotateVector(PVector translation, PVector rotation) {
     return rotatedTranslation;
 }
 
+
+/**
+ * Rotate vector around z, y and x axii
+ */
 public PVector rotateVector(PVector translation, PVector rotation) {
     PVector rotatedTranslation = translation;
     rotatedTranslation = rotateVectorZ(rotatedTranslation, rotation.z);
@@ -19,6 +28,9 @@ public PVector rotateVector(PVector translation, PVector rotation) {
     return rotatedTranslation;
 }
 
+/**
+ * Rotate vector around x axis
+ */
 public PVector rotateVectorX(PVector vec, float angle) {
     PVector rotatedTranslation = new PVector();
     float c = (float) Math.cos(angle);
@@ -29,6 +41,9 @@ public PVector rotateVectorX(PVector vec, float angle) {
     return rotatedTranslation;
 }
 
+/**
+ * Rotate vector around y axis
+ */
 public PVector rotateVectorY(PVector vec, float angle) {
     PVector rotatedTranslation = new PVector();
     float c = (float) Math.cos(angle);
@@ -39,6 +54,9 @@ public PVector rotateVectorY(PVector vec, float angle) {
     return rotatedTranslation;
 }
 
+/**
+ * Rotate vector around z axis
+ */
 public PVector rotateVectorZ(PVector vec, float angle) {
     PVector rotatedTranslation = new PVector();
     float c = (float) Math.cos(angle);
@@ -49,6 +67,9 @@ public PVector rotateVectorZ(PVector vec, float angle) {
     return rotatedTranslation;
 }
 
+/**
+ * Create a new vector with min x, y and z of the two vectors a and b
+ */
 public PVector minVector(PVector a, PVector b) {
     PVector result = new PVector();
     result.x = Math.min(a.x, b.x);
@@ -57,6 +78,9 @@ public PVector minVector(PVector a, PVector b) {
     return result;
 }
 
+/**
+ * Create a new vector with max x, y and z of the two vectors a and b
+ */
 public PVector maxVector(PVector a, PVector b) {
     PVector result = new PVector();
     result.x = Math.max(a.x, b.x);

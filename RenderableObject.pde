@@ -81,7 +81,7 @@ public class RenderableObject implements Renderable {
         }
 
         // render own geometry
-        if (settings.renderGeometry && _visible) {
+        if (_visible) {
             renderGeometry(g);
         }
 

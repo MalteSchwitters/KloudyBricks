@@ -59,16 +59,11 @@ public class World extends RenderableObject {
         g.background(getColor().x, getColor().y * 0.3, getColor().z);
         
         if (gameStarted) {
+            // not needed if the game is currently paused
             for (RenderableObject child : getChildren()) {
                 _actor.checkCollision(child);
-                if (settings.renderCollision) {
-                    child.getCollision().render(g);
-                }
             }
         }
-
-        // poor performance
-        // g.hint(ENABLE_DEPTH_SORT);
         super.render(g);
     }
 
@@ -84,28 +79,19 @@ public class World extends RenderableObject {
         private List<PVector> _colors = new ArrayList<PVector>();
         private int _currentColorIndex = 0;
         
-        public ColorChangeAnimation() {
-            // init colors
-            // rgb
-            //_colors.add(new PVector(25, 188, 157)); // tuerkis
+        public ColorChangeAnimation() { 
+            // init colors as rgb, because gradient looks better
             _colors.add(new PVector(231, 126, 34)); // orange
-            _colors.add(new PVector(232, 76, 61)); // rot
-            _colors.add(new PVector(41, 127, 184)); // blau
-            //_colors.add(new PVector(154, 89, 181)); // lila
-            //_colors.add(new PVector(241, 197, 14)); // gelb
-            _colors.add(new PVector(39, 174, 97)); // gruen
-            
-            // hsv
-            //_colors.add(new PVector(28, 85, 91)); // orange
-            //_colors.add(new PVector(5, 74, 91)); // rot
-            //_colors.add(new PVector(204, 78, 72)); // blau
-            //_colors.add(new PVector(146, 78, 68)); // gruen
+            _colors.add(new PVector(232, 76, 61)); // red
+            _colors.add(new PVector(41, 127, 184)); // blou
+            _colors.add(new PVector(39, 174, 97)); // green
         }
 
         @Override
         public void animate(RenderableObject target, float t) {
             PVector c = _colors.get(_currentColorIndex).copy();
             c.lerp(_colors.get(getNextColor()), t);
+            // convert to hsb
             float[] hsb = new float[3];
             hsb = Color.RGBtoHSB((int) c.x, (int) c.y, (int) c.z, hsb);
             target.setColorInherit(new PVector(hsb[0] * 360, hsb[1] * 100, hsb[2] * 100));
